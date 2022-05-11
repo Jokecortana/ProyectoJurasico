@@ -44,7 +44,7 @@ void getResolution(void);
 
 // camera
 Camera camera(glm::vec3(0.0f, 10.0f, 90.0f));
-float MovementSpeed = 0.1f;
+float MovementSpeed = 1500.0f; //VELOCIDAD DE LA CAMARA
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -62,14 +62,56 @@ glm::vec3 lightDirection(0.0f, -1.0f, -1.0f);
 // posiciones
 //float x = 0.0f;
 //float y = 0.0f;
-float	movAuto_x = 0.0f,
-		movAuto_z = 0.0f,
-		orienta = 0.0f;
+//VARIABLES BRYAN
+float
+
+movPtero1_x = 0.0f,
+movPtero1_z = 0.0f,
+orientaPtero1 = 0.0f,
+
+movPtero2_x = 0.0f,
+movPtero2_z = 0.0f,
+orientaPtero2 = 0.0f,
+
+movPtero3_x = 0.0f,
+movPtero3_z = 0.0f,
+orientaPtero3 = 0.0f,
+
+movPtero4_x = 0.0f,
+movPtero4_z = 0.0f,
+orientaPtero4 = 0.0f;
+
 bool	animacion = false,
-		recorrido1 = true,
-		recorrido2 = false,
-		recorrido3 = false,
-		recorrido4 = false;
+recorrido1 = true,
+recorrido2 = false,
+recorrido3 = false,
+recorrido4 = false,
+recorrido5 = false,
+recorrido6 = false,
+animacion2 = false,
+
+animaPtero = true,
+
+Ptero1Reco1 = true,
+Ptero1Reco2 = false,
+Ptero1Reco3 = false,
+Ptero1Reco4 = false,
+
+Ptero2Reco1 = false,
+Ptero2Reco2 = true,
+Ptero2Reco3 = false,
+Ptero2Reco4 = false,
+
+Ptero3Reco1 = false,
+Ptero3Reco2 = false,
+Ptero3Reco3 = true,
+Ptero3Reco4 = false,
+
+Ptero4Reco1 = false,
+Ptero4Reco2 = false,
+Ptero4Reco3 = false,
+Ptero4Reco4 = true;
+
 
 bool avanza = false;
 float giroLlantas = 0.0f; //VARIABLE DE GIRO DE LLANTAS 
@@ -215,7 +257,180 @@ void animate(void) //Ciclo de animado
 		}
 	}
 
-	//Vehículo VELOCIDAD DE MOVIMIENTO DEL COCHE
+	//ANIMACIONES BRAYAN
+	//ANIMA-PTERODACTILO
+	if (animaPtero) {
+
+		//PTERODACTILO 1
+		if (Ptero1Reco1) {
+			movPtero1_x = -75.0f;
+			movPtero1_z += 1.0f;
+			orientaPtero1 = 0.0f;
+			if (movPtero1_z >= 75.0f) {
+				Ptero1Reco1 = false;
+				Ptero1Reco2 = true;
+			}
+		}
+
+		if (Ptero1Reco2) {
+			movPtero1_x += 1.0f;
+			movPtero1_z = 75.0f;
+			orientaPtero1 = 90.0f;
+			if (movPtero1_x >= 75.0f) {
+				Ptero1Reco2 = false;
+				Ptero1Reco3 = true;
+			}
+		}
+
+		if (Ptero1Reco3) {
+			movPtero1_x = 75.0f;
+			movPtero1_z -= 1.0f;
+			orientaPtero1 = 180.0f;
+			if (movPtero1_z <= -75.0f) {
+				Ptero1Reco3 = false;
+				Ptero1Reco4 = true;
+			}
+		}
+
+		if (Ptero1Reco4) {
+			movPtero1_x -= 1.0f;
+			movPtero1_z = -75.0f;
+			orientaPtero1 = 270.0f;
+			if (movPtero1_x <= -75.0f) {
+				Ptero1Reco4 = false;
+				Ptero1Reco1 = true;
+			}
+		}
+		//---------------------------------------------------------
+				//PTERODACTILO 2
+		if (Ptero2Reco1) {
+			movPtero2_x = -75.0f;
+			movPtero2_z += 1.0f;
+			orientaPtero2 = 0.0f;
+			if (movPtero2_z >= 75.0f) {
+				Ptero2Reco1 = false;
+				Ptero2Reco2 = true;
+			}
+		}
+
+		if (Ptero2Reco2) {
+			movPtero2_x += 1.0f;
+			movPtero2_z = 75.0f;
+			orientaPtero2 = 90.0f;
+			if (movPtero2_x >= 75.0f) {
+				Ptero2Reco2 = false;
+				Ptero2Reco3 = true;
+			}
+		}
+
+		if (Ptero2Reco3) {
+			movPtero2_x = 75.0f;
+			movPtero2_z -= 1.0f;
+			orientaPtero2 = 180.0f;
+			if (movPtero2_z <= -75.0f) {
+				Ptero2Reco3 = false;
+				Ptero2Reco4 = true;
+			}
+		}
+
+		if (Ptero2Reco4) {
+			movPtero2_x -= 1.0f;
+			movPtero2_z = -75.0f;
+			orientaPtero2 = 270.0f;
+			if (movPtero2_x <= -75.0f) {
+				Ptero2Reco4 = false;
+				Ptero2Reco1 = true;
+			}
+		}
+
+		//---------------------------------------------------------
+			//PTERODACTILO 3
+
+		if (Ptero3Reco1) {
+			movPtero3_x = -75.0f;
+			movPtero3_z += 1.0f;
+			orientaPtero3 = 0.0f;
+			if (movPtero3_z >= 75.0f) {
+				Ptero3Reco1 = false;
+				Ptero3Reco2 = true;
+			}
+		}
+
+		if (Ptero3Reco2) {
+			movPtero3_x += 1.0f;
+			movPtero3_z = 75.0f;
+			orientaPtero3 = 90.0f;
+			if (movPtero3_x >= 75.0f) {
+				Ptero3Reco2 = false;
+				Ptero3Reco3 = true;
+			}
+		}
+
+		if (Ptero3Reco3) {
+			movPtero3_x = 75.0f;
+			movPtero3_z -= 1.0f;
+			orientaPtero3 = 180.0f;
+			if (movPtero3_z <= -75.0f) {
+				Ptero3Reco3 = false;
+				Ptero3Reco4 = true;
+			}
+		}
+
+		if (Ptero3Reco4) {
+			movPtero3_x -= 1.0f;
+			movPtero3_z = -75.0f;
+			orientaPtero3 = 270.0f;
+			if (movPtero3_x <= -75.0f) {
+				Ptero3Reco4 = false;
+				Ptero3Reco1 = true;
+			}
+		}
+
+		//---------------------------------------------------------
+			//PTERODACTILO 4
+
+		if (Ptero4Reco1) {
+			movPtero4_x = -75.0f;
+			movPtero4_z += 1.0f;
+			orientaPtero4 = 0.0f;
+			if (movPtero4_z >= 75.0f) {
+				Ptero4Reco1 = false;
+				Ptero4Reco2 = true;
+			}
+		}
+
+		if (Ptero4Reco2) {
+			movPtero4_x += 1.0f;
+			movPtero4_z = 75.0f;
+			orientaPtero4 = 90.0f;
+			if (movPtero4_x >= 75.0f) {
+				Ptero4Reco2 = false;
+				Ptero4Reco3 = true;
+			}
+		}
+
+		if (Ptero4Reco3) {
+			movPtero4_x = 75.0f;
+			movPtero4_z -= 1.0f;
+			orientaPtero4 = 180.0f;
+			if (movPtero4_z <= -75.0f) {
+				Ptero4Reco3 = false;
+				Ptero4Reco4 = true;
+			}
+		}
+
+		if (Ptero4Reco4) {
+			movPtero4_x -= 1.0f;
+			movPtero4_z = -75.0f;
+			orientaPtero4 = 270.0f;
+			if (movPtero4_x <= -75.0f) {
+				Ptero4Reco4 = false;
+				Ptero4Reco1 = true;
+			}
+		}
+	}
+
+	/*Vehículo VELOCIDAD DE MOVIMIENTO DEL COCHE
 	if (animacion)
 	{
 		if (avanza) {
@@ -238,7 +453,7 @@ void animate(void) //Ciclo de animado
 		}
 
 
-
+		
 
 
 
@@ -251,9 +466,9 @@ void animate(void) //Ciclo de animado
 		movAuto_z += 2.3f;
 		giroLlantas += 3.0f;
 		}
-		*///Movimiento estandar
+		//Movimiento estandar
 		     
-	}
+	}*/
 	
 }
 
@@ -358,6 +573,21 @@ int main()
 
 	Model riel1("resources/objects/riel1/r1.obj");
 	Model riel2("resources/objects/riel2/r2.obj");
+	Model plataforma("resources/objects/plataform/plat.obj");
+
+	//MODELOS BRAYAN
+	Model Cupula("resources/objects/Cupula/Cupula4.obj");
+
+	Model Dino2("resources/objects/Dino2/ptero.obj");
+	Model Dino2_2("resources/objects/Dino2/ptero.obj");
+	Model Dino2_3("resources/objects/Dino2/ptero.obj");
+	Model Dino2_4("resources/objects/Dino2/ptero.obj");
+
+	Model GiroEsfera("resources/objects/GiroEsfera/GiroEsfera.obj");
+	//FIN MODELOS BRAYAN
+
+
+
 
 
 	//MODEL MIXAMO PARASIT
@@ -514,18 +744,18 @@ int main()
 		staticShader.setMat4("model", model);
 		casaVieja.Draw(staticShader);
 		*/
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(50.0f, 0.0f, 120.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(1150.0f, 0.0f, -790.0f));
 		model = glm::scale(model, glm::vec3(2.0f));
 		staticShader.setMat4("model", model);
 		helecho.Draw(staticShader);
 
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(70.0f, 0.0f, 50.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(1180.0f, 0.0f, -800.0f));
 		model = glm::scale(model, glm::vec3(1.0f));
 		staticShader.setMat4("model", model);
 		fPlant.Draw(staticShader);
 
 
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(-150.0f, 0.0f, 300.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-1000.0f, 0.0f, -790.0f));
 		model = glm::scale(model, glm::vec3(1.0f));
 		staticShader.setMat4("model", model);
 		tRex.Draw(staticShader);
@@ -538,107 +768,198 @@ int main()
 
 
 		//Escultura
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -150.0f, 100.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-450.0f, -150.0f, 100.0f));
 		model = glm::scale(model, glm::vec3(1.0f));
 		staticShader.setMat4("model", model);
 		escultrex.Draw(staticShader);
 
 		//huevo1
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(50.0f, 10.0f, 120.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(1150.0f, 10.0f, -790.0f));
 		model = glm::scale(model, glm::vec3(10.0f));
 		staticShader.setMat4("model", model);
 		huevo1.Draw(staticShader);
 
 		//huevo2
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(70.0f, 5.0f, 120.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(1070.0f, 5.0f, -850.0f));
 		model = glm::scale(model, glm::vec3(8.0f));
 		staticShader.setMat4("model", model);
 		huevo2.Draw(staticShader);
 
 		//huevo3
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(90.0f, 10.0f, 120.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(1090.0f, 10.0f, -890.0f));
 		model = glm::scale(model, glm::vec3(15.0f));
 		staticShader.setMat4("model", model);
 		huevo3.Draw(staticShader);
 
 		//huevo4
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(100.0f, 5.0f, 150.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(1020.0f, 5.0f, -750.0f));
 		model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 10.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(9.0f));
 		staticShader.setMat4("model", model);
 		huevo1.Draw(staticShader);
 
 		//banca
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(120.0f, 0.0f, 250.0f));
-		model = glm::scale(model, glm::vec3(1.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(800.0f, 35.0f, 800.0f));
+		model = glm::rotate(model, glm::radians(-180.0f), glm::vec3(0.0f, 20.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(3.0f));
 		staticShader.setMat4("model", model);
 		banc.Draw(staticShader);
 
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(160.0f, 0.0f, 250.0f));
-		model = glm::scale(model, glm::vec3(1.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(880.0f, 35.0f, 800.0f));
+		model = glm::rotate(model, glm::radians(-180.0f), glm::vec3(0.0f, 20.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(3.0f));
 		staticShader.setMat4("model", model);
 		banc.Draw(staticShader);
 
 
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(190.0f, 0.0f, 250.0f));
-		model = glm::scale(model, glm::vec3(1.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(960.0f, 35.0f, 800.0f));
+		model = glm::rotate(model, glm::radians(-180.0f), glm::vec3(0.0f, 20.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(3.0f));
 		staticShader.setMat4("model", model);
 		banc.Draw(staticShader);
 
 
 		//Camino
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(100.0f, 0.0f, 300.0f));
-		model = glm::scale(model, glm::vec3(1.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(1100.0f, 0.0f, -300.0f));
+		model = glm::scale(model, glm::vec3(4.0f));
 		staticShader.setMat4("model", model);
 		camino.Draw(staticShader);
 
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(100.0f, 0.0f, 270.0f));
-		model = glm::scale(model, glm::vec3(1.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(1100.0f, 0.0f, -150.0f));
+		model = glm::scale(model, glm::vec3(4.0f));
 		staticShader.setMat4("model", model);
 		camino.Draw(staticShader);
 
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(100.0f, 0.0f, 240.0f));
-		model = glm::scale(model, glm::vec3(1.0f));
-		staticShader.setMat4("model", model);
-		camino.Draw(staticShader);
-
-
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(100.0f, 0.0f, 210.0f));
-		model = glm::scale(model, glm::vec3(1.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(1100.0f, 0.0f, -0.0f));
+		model = glm::scale(model, glm::vec3(4.0f));
 		staticShader.setMat4("model", model);
 		camino.Draw(staticShader);
 
 
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(100.0f, 0.0f, 170.0f));
-		model = glm::scale(model, glm::vec3(1.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(1100.0f, 0.0f, 150.0f));
+		model = glm::scale(model, glm::vec3(4.0f));
+		staticShader.setMat4("model", model);
+		camino.Draw(staticShader);
+
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(1100.0f, 0.0f, 300.0f));
+		model = glm::scale(model, glm::vec3(4.0f));
 		staticShader.setMat4("model", model);
 		camino.Draw(staticShader);
 
 
 		//rieles
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 100.0f));
-		model = glm::scale(model, glm::vec3(0.5f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 800.0f));
+		model = glm::scale(model, glm::vec3(1.0f));
 		staticShader.setMat4("model", model);
 		riel1.Draw(staticShader);
 
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 70.0f));
-		model = glm::scale(model, glm::vec3(0.5f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 700.0f));
+		model = glm::scale(model, glm::vec3(1.0f));
 		staticShader.setMat4("model", model);
 		riel1.Draw(staticShader);
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 900.0f));
+		model = glm::scale(model, glm::vec3(1.0f));
+		staticShader.setMat4("model", model);
+		riel1.Draw(staticShader);
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 1000.0f));
+		model = glm::scale(model, glm::vec3(1.5f));
+		staticShader.setMat4("model", model);
+		riel1.Draw(staticShader);
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 1100.0f));
+		model = glm::scale(model, glm::vec3(1.0f));
+		staticShader.setMat4("model", model);
+		riel1.Draw(staticShader);
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 600.0f));
+		model = glm::scale(model, glm::vec3(1.5f));
+		staticShader.setMat4("model", model);
+		riel1.Draw(staticShader);
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 500.0f));
+		model = glm::scale(model, glm::vec3(1.0f));
+		staticShader.setMat4("model", model);
+		riel1.Draw(staticShader);
+
+		//riel comida
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(450.0f, 0.0f, 200.0f));
+		model = glm::rotate(model, glm::radians(45.0f), glm::vec3(0.0f, 10.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.0f));
+		staticShader.setMat4("model", model);
+		riel1.Draw(staticShader);
+
 
 		//puerta
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 700.0f));
-		model = glm::scale(model, glm::vec3(0.5f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 1600.0f));
+		model = glm::scale(model, glm::vec3(0.93f));
 		staticShader.setMat4("model", model);
 		puerta.Draw(staticShader);
 
 		//baño
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -300.0f));
-		model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 10.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(1.5f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(1100.0f, 35.0f, 850.0f));
+		model = glm::rotate(model, glm::radians(-45.0f), glm::vec3(0.0f, 20.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.0f));
 		staticShader.setMat4("model", model);
 		restroom.Draw(staticShader);
 
+		//plataforma
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(1100.0f, 0.0f, 900.0f));
+		model = glm::rotate(model, glm::radians(45.0f), glm::vec3(0.0f, 10.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.5f));
+		staticShader.setMat4("model", model);
+		plataforma.Draw(staticShader);
+
+
+		//MODELOS BRAYAN
+		model = glm::rotate(glm::mat4(1.0f), glm::radians(-45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -200.0f));
+		model = glm::scale(model, glm::vec3(10.0f));
+		staticShader.setMat4("model", model);
+		GiroEsfera.Draw(staticShader);
+
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(400.0f));
+		staticShader.setMat4("model", model);
+		Cupula.Draw(staticShader);
+
+		model = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(movPtero1_x, 300.0f, movPtero1_z));
+		tmp = model = glm::rotate(model, glm::radians(orientaPtero1), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.0f*0.05));
+		staticShader.setMat4("model", model);
+		Dino2.Draw(staticShader);
+
+		model = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(movPtero2_x, 300.0f, movPtero2_z));
+		tmp = model = glm::rotate(model, glm::radians(orientaPtero2), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.0f * 0.05));
+		staticShader.setMat4("model", model);
+		Dino2_2.Draw(staticShader);
+
+
+		model = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(movPtero3_x, 300.0f, movPtero3_z));
+		tmp = model = glm::rotate(model, glm::radians(orientaPtero3), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.0f * 0.05));
+		staticShader.setMat4("model", model);
+		Dino2_3.Draw(staticShader);
+
+		model = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(movPtero4_x, 300.0f, movPtero4_z));
+		tmp = model = glm::rotate(model, glm::radians(orientaPtero4), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.0f * 0.05));
+		staticShader.setMat4("model", model);
+		Dino2_4.Draw(staticShader);
+
+
+
+
+
+		//FIN MODELOS BRAYAN
 
 		/*CASA DE BRUJAS
 		model = glm::translate(glm::mat4(1.0f), glm::vec3(-120.0f, 0.0f, 30.0f)); //Creando la casa de brujas

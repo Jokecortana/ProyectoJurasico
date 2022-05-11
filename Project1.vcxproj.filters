@@ -54,4 +54,9 @@
       <Filter>Archivos de recursos</Filter>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="camera.h">
+      <Filter>Archivos de origen</Filter>
+    </ClInclude>
+  </ItemGroup>
 </Project>
