@@ -340,7 +340,7 @@ int main()
 	// load models
 	// -----------
 	//Casa de brujas
-	Model casaBrujas("resources/objects/Brujas/casabrujas.obj");
+	
 	Model helecho("resources/objects/helecho/hel.obj");
 	Model fPlant("resources/objects/frgplant/frgp.obj");
 	Model tRex("resources/objects/trex/rex.obj");
@@ -352,32 +352,17 @@ int main()
 	Model banc("resources/objects/banca/objBench.obj");
 	Model man("resources/objects/manrex/mandibula.obj");
 	Model piso("resources/objects/piso2/piso.obj");
-	Model botaDer("resources/objects/Personaje/bota.obj");
-	Model piernaDer("resources/objects/Personaje/piernader.obj");
-	Model piernaIzq("resources/objects/Personaje/piernader.obj");
-	Model torso("resources/objects/Personaje/torso.obj");
-	Model brazoDer("resources/objects/Personaje/brazoder.obj");
-	Model brazoIzq("resources/objects/Personaje/brazoizq.obj");
-	Model cabeza("resources/objects/Personaje/cabeza.obj");
-	Model carro("resources/objects/lambo/carroceria.obj");
-	Model llanta("resources/objects/lambo/Wheel_DMP.obj");
-	Model casaVieja("resources/objects/casa/OldHouse.obj");
-	//Model cubo("resources/objects/cubo/cube02.obj");
-	Model casaDoll("resources/objects/casa/DollHouse.obj");
+	Model camino("resources/objects/camino/rwk.obj");
+	Model puerta("resources/objects/puerta/puerta1.obj");
+	Model restroom("resources/objects/restroom/rest.obj");
+
+	Model riel1("resources/objects/riel1/r1.obj");
+	Model riel2("resources/objects/riel2/r2.obj");
+
 
 	//MODEL MIXAMO PARASIT
 	ModelAnim parasit("resources/objects/Mutant/Drunk Walk.dae");
 	parasit.initShaders(animShader.ID); //añadir el objeto al shader de animacion
-
-
-	//MODELO CUBO
-
-	Model miCubo("resources/objects/MiCubo/micubito.obj");
-
-
-	//CASA TECHO
-	Model casaTec("resources/objects/CasaT/micasa.obj");
-	
 
 
 
@@ -553,7 +538,7 @@ int main()
 
 
 		//Escultura
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(100.0f, -150.0f, 100.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -150.0f, 100.0f));
 		model = glm::scale(model, glm::vec3(1.0f));
 		staticShader.setMat4("model", model);
 		escultrex.Draw(staticShader);
@@ -601,16 +586,67 @@ int main()
 		banc.Draw(staticShader);
 
 
+		//Camino
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(100.0f, 0.0f, 300.0f));
+		model = glm::scale(model, glm::vec3(1.0f));
+		staticShader.setMat4("model", model);
+		camino.Draw(staticShader);
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(100.0f, 0.0f, 270.0f));
+		model = glm::scale(model, glm::vec3(1.0f));
+		staticShader.setMat4("model", model);
+		camino.Draw(staticShader);
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(100.0f, 0.0f, 240.0f));
+		model = glm::scale(model, glm::vec3(1.0f));
+		staticShader.setMat4("model", model);
+		camino.Draw(staticShader);
+
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(100.0f, 0.0f, 210.0f));
+		model = glm::scale(model, glm::vec3(1.0f));
+		staticShader.setMat4("model", model);
+		camino.Draw(staticShader);
+
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(100.0f, 0.0f, 170.0f));
+		model = glm::scale(model, glm::vec3(1.0f));
+		staticShader.setMat4("model", model);
+		camino.Draw(staticShader);
+
+
+		//rieles
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 100.0f));
+		model = glm::scale(model, glm::vec3(0.5f));
+		staticShader.setMat4("model", model);
+		riel1.Draw(staticShader);
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 70.0f));
+		model = glm::scale(model, glm::vec3(0.5f));
+		staticShader.setMat4("model", model);
+		riel1.Draw(staticShader);
+
+		//puerta
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 700.0f));
+		model = glm::scale(model, glm::vec3(0.5f));
+		staticShader.setMat4("model", model);
+		puerta.Draw(staticShader);
+
+		//baño
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -300.0f));
+		model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 10.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.5f));
+		staticShader.setMat4("model", model);
+		restroom.Draw(staticShader);
+
+
 		/*CASA DE BRUJAS
 		model = glm::translate(glm::mat4(1.0f), glm::vec3(-120.0f, 0.0f, 30.0f)); //Creando la casa de brujas
 		model = glm::scale(model, glm::vec3(3.0f));
 		staticShader.setMat4("model", model);
 		casaBrujas.Draw(staticShader);*/
 
-		//Mi cubo
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(-200.0f, 0.0f, 100.0f));
-		staticShader.setMat4("model", model);
-		miCubo.Draw(staticShader);
+	
 
 
 		/*CasatTec
