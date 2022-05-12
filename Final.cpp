@@ -580,6 +580,8 @@ int main()
 	Model tubo("resources/objects/tubo/tb.obj");
 	Model cria1("resources/objects/criadero1/cr1.obj");
 	Model cria2("resources/objects/criadero2/cr2.obj");
+	Model laboratorio("resources/objects/lab/lab1.obj");
+	Model invernadero("resources/objects/greenhouse/gh1.obj");
 	
 	//MODELOS B
 	Model Cupula("resources/objects/Cupula/Cupula4.obj");
@@ -761,7 +763,7 @@ int main()
 		fPlant.Draw(staticShader);
 
 
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(-1000.0f, 0.0f, -790.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -900.0f));
 		model = glm::scale(model, glm::vec3(1.0f));
 		staticShader.setMat4("model", model);
 		tRex.Draw(staticShader);
@@ -823,7 +825,7 @@ int main()
 		banc.Draw(staticShader);
 
 
-	
+
 
 
 		//Camino
@@ -912,6 +914,27 @@ int main()
 		staticShader.setMat4("model", model);
 		riel1.Draw(staticShader);
 
+		//riel lab
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-450.0f, 0.0f, -450.0f));
+		model = glm::rotate(model, glm::radians(45.0f), glm::vec3(0.0f, 10.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.0f));
+		staticShader.setMat4("model", model);
+		riel1.Draw(staticShader);
+
+		//riel invernadero
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-550.0f, 0.0f, -120.0f));
+		model = glm::rotate(model, glm::radians(-270.0f), glm::vec3(0.0f, 10.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.0f));
+		staticShader.setMat4("model", model);
+		riel1.Draw(staticShader);
+
+		//riel rex
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -750.0f));
+		model = glm::rotate(model, glm::radians(-180.0f), glm::vec3(0.0f, 10.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.0f));
+		staticShader.setMat4("model", model);
+		riel1.Draw(staticShader);
+
 
 		//puerta
 		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 1600.0f));
@@ -932,7 +955,7 @@ int main()
 		model = glm::scale(model, glm::vec3(1.5f));
 		staticShader.setMat4("model", model);
 		plataforma.Draw(staticShader);
-	
+
 		//Restaurante
 		model = glm::translate(glm::mat4(1.0f), glm::vec3(900.0f, 35.0f, 1050.0f));
 		model = glm::rotate(model, glm::radians(-135.0f), glm::vec3(0.0f, 1.0f, 0.0f));
@@ -983,8 +1006,26 @@ int main()
 		model = glm::scale(model, glm::vec3(25.0f));
 		staticShader.setMat4("model", model);
 		cria2.Draw(staticShader);
-		
-		
+
+		//laboratorio
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-1100.0f, 0.0f, -900.0f));
+		model = glm::rotate(model, glm::radians(65.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.0f));
+		staticShader.setMat4("model", model);
+		laboratorio.Draw(staticShader);
+
+
+		//invernadero
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-1000.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.05f));
+		staticShader.setMat4("model", model);
+		invernadero.Draw(staticShader);
+
+
+
 
 
 		//MODELOS BRAYAN

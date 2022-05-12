@@ -3,31 +3,31 @@ c:\users\arkra\desktop\project1\project1\include\shader_m.h(44): warning C4101: 
 c:\users\arkra\desktop\project1\project1\include\modelanim.h(104): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
 c:\users\arkra\desktop\project1\project1\include\modelanim.h(520): warning C4244: 'inicializando': conversión de 'double' a 'float'; posible pérdida de datos
 c:\users\arkra\desktop\project1\project1\final.cpp(118): warning C4244: 'inicializando': conversión de 'float' a 'int'; posible pérdida de datos
-c:\users\arkra\desktop\project1\project1\final.cpp(1006): warning C4305: 'argumento': truncamiento de 'double' a 'T'
+c:\users\arkra\desktop\project1\project1\final.cpp(1047): warning C4305: 'argumento': truncamiento de 'double' a 'T'
           with
           [
               T=float
           ]
-c:\users\arkra\desktop\project1\project1\final.cpp(1013): warning C4305: 'argumento': truncamiento de 'double' a 'T'
+c:\users\arkra\desktop\project1\project1\final.cpp(1054): warning C4305: 'argumento': truncamiento de 'double' a 'T'
           with
           [
               T=float
           ]
-c:\users\arkra\desktop\project1\project1\final.cpp(1021): warning C4305: 'argumento': truncamiento de 'double' a 'T'
+c:\users\arkra\desktop\project1\project1\final.cpp(1062): warning C4305: 'argumento': truncamiento de 'double' a 'T'
           with
           [
               T=float
           ]
-c:\users\arkra\desktop\project1\project1\final.cpp(1028): warning C4305: 'argumento': truncamiento de 'double' a 'T'
+c:\users\arkra\desktop\project1\project1\final.cpp(1069): warning C4305: 'argumento': truncamiento de 'double' a 'T'
           with
           [
               T=float
           ]
-c:\users\arkra\desktop\project1\project1\final.cpp(1306): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
-c:\users\arkra\desktop\project1\project1\final.cpp(1307): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
-c:\users\arkra\desktop\project1\project1\final.cpp(1311): warning C4244: 'inicializando': conversión de 'double' a 'float'; posible pérdida de datos
-c:\users\arkra\desktop\project1\project1\final.cpp(1312): warning C4244: 'inicializando': conversión de 'double' a 'float'; posible pérdida de datos
-c:\users\arkra\desktop\project1\project1\final.cpp(1314): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
-c:\users\arkra\desktop\project1\project1\final.cpp(1315): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
-c:\users\arkra\desktop\project1\project1\final.cpp(1323): warning C4244: 'argumento': conversión de 'double' a 'float'; posible pérdida de datos
+c:\users\arkra\desktop\project1\project1\final.cpp(1347): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
+c:\users\arkra\desktop\project1\project1\final.cpp(1348): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
+c:\users\arkra\desktop\project1\project1\final.cpp(1352): warning C4244: 'inicializando': conversión de 'double' a 'float'; posible pérdida de datos
+c:\users\arkra\desktop\project1\project1\final.cpp(1353): warning C4244: 'inicializando': conversión de 'double' a 'float'; posible pérdida de datos
+c:\users\arkra\desktop\project1\project1\final.cpp(1355): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
+c:\users\arkra\desktop\project1\project1\final.cpp(1356): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
+c:\users\arkra\desktop\project1\project1\final.cpp(1364): warning C4244: 'argumento': conversión de 'double' a 'float'; posible pérdida de datos
   Project1.vcxproj -> C:\Users\arkra\Desktop\Project1\Debug\Project1.exe
