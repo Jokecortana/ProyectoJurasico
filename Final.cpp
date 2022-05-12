@@ -1,8 +1,8 @@
 ﻿/*---------------------------------------------------------*/
-/* ----------------  Práctica    10   -----------*/
+/* ----------------  Proyecto Laboratorio de Computación gráfica -----------*/
 /*-----------------    2022-2   ---------------------------*/
-/*------------- Alumno: Martínez Pérez Dylan    ---------------*/
-/*------------- No. Cuenta 313152238   ---------------*/
+/*------------- Alumnos: Tenorio Ruiz Brayan Fernando y Martínez Pérez Dylan    ---------------*/
+/*------------- No. Cuenta: 316205728 y 313152238  ---------------*/
 #include <Windows.h>
 #include <glad/glad.h>
 #include <glfw3.h>	//main
@@ -710,7 +710,12 @@ int main()
 	Model cria2("resources/objects/criadero2/cr2.obj");
 	Model laboratorio("resources/objects/lab/lab1.obj");
 	Model invernadero("resources/objects/greenhouse/gh1.obj");
-	
+	Model plant1("resources/objects/plant1/pl1.obj");
+	Model plant2("resources/objects/plants2/pl2.obj");
+	Model plant3("resources/objects/plants3/pl3.obj");
+	//Model plant4("resources/objects/plants4/pl5.obj");
+
+
 	//MODELOS B
 	Model Cupula("resources/objects/Cupula/Cupula4.obj");
 
@@ -865,7 +870,7 @@ int main()
 		model = glm::scale(model, glm::vec3(0.2f));
 		staticShader.setMat4("model", model);
 		piso.Draw(staticShader);
-	
+
 		model = glm::translate(glm::mat4(1.0f), glm::vec3(1150.0f, 0.0f, -790.0f));
 		model = glm::scale(model, glm::vec3(2.0f));
 		staticShader.setMat4("model", model);
@@ -876,17 +881,19 @@ int main()
 		staticShader.setMat4("model", model);
 		fPlant.Draw(staticShader);
 
-
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -1000.0f));
+		/*
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -1100.0f));
 		model = glm::scale(model, glm::vec3(1.0f));
 		staticShader.setMat4("model", model);
 		tRex.Draw(staticShader);
-		/*Cabeza REX
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(300.0f, 0.0f, 300.0f));
+		*/
+		//Cabeza REX
+		
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -150.0f, -1300.0f));
 		model = glm::scale(model, glm::vec3(1.0f));
 		staticShader.setMat4("model", model);
 		cabezarex.Draw(staticShader);
-		*/
+		
 
 		//Escultura
 		model = glm::translate(glm::mat4(1.0f), glm::vec3(-450.0f, -150.0f, 100.0f));
@@ -926,9 +933,55 @@ int main()
 		//huevo4
 		model = glm::translate(glm::mat4(1.0f), glm::vec3(1020.0f, 5.0f, -750.0f));
 		model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 10.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(9.0f));
+		model = glm::scale(model, glm::vec3(20.0f));
 		staticShader.setMat4("model", model);
 		huevo1.Draw(staticShader);
+
+		//huevo5
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(900.0f, 5.0f, -750.0f));
+		model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 10.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(20.0f));
+		staticShader.setMat4("model", model);
+		huevo1.Draw(staticShader);
+
+		//huevo6
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(840.0f, 15.0f, -890.0f));
+		model = glm::scale(model, glm::vec3(25.0f));
+		staticShader.setMat4("model", model);
+		huevo3.Draw(staticShader);
+
+		//huevo7
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(1000.0f, 15.0f, -700.0f));
+		model = glm::scale(model, glm::vec3(40.0f));
+		staticShader.setMat4("model", model);
+		huevo1.Draw(staticShader);
+
+
+		//plantas
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(960.0f, -40.0f, -500.0f));
+		model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.01f));
+		staticShader.setMat4("model", model);
+		plant2.Draw(staticShader);
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(1100.0f, -40.0f, -930.0f));
+		model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.01f));
+		staticShader.setMat4("model", model);
+		plant3.Draw(staticShader);
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(920.0f, -80.0f, -935.0f));
+		model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.015f));
+		staticShader.setMat4("model", model);
+		plant3.Draw(staticShader);
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(850.0f, 0.0f, -1005.0f));
+		model = glm::scale(model, glm::vec3(10.0f));
+		staticShader.setMat4("model", model);
+		helecho.Draw(staticShader);
+
 
 		//banca
 		model = glm::translate(glm::mat4(1.0f), glm::vec3(600.0f, 35.0f, 800.0f));
@@ -1122,20 +1175,80 @@ int main()
 
 		//laboratorio
 
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(-1100.0f, 0.0f, -900.0f));
-		model = glm::rotate(model, glm::radians(-85.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-800.0f, 0.0f, -900.0f));
+		model = glm::rotate(model, glm::radians(-45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(1.0f));
 		staticShader.setMat4("model", model);
 		laboratorio.Draw(staticShader);
 
 
 		//invernadero
-
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(-1000.0f, 0.0f, 0.0f));
+	
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-1000.0f, -40.0f, 0.0f));
 		model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(0.001f));
+		model = glm::scale(model, glm::vec3(1.0f));
 		staticShader.setMat4("model", model);
-		invernadero.Draw(staticShader);
+		plant1.Draw(staticShader);
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-1200.0f, -40.0f, 150.0f));
+		model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.0f));
+		staticShader.setMat4("model", model);
+		plant1.Draw(staticShader);
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-980.0f, -40.0f, 200.0f));
+		model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.01f));
+		staticShader.setMat4("model", model);
+		plant2.Draw(staticShader);
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-860.0f, -40.0f, -200.0f));
+		model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.01f));
+		staticShader.setMat4("model", model);
+		plant2.Draw(staticShader);
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-1200.0f, -40.0f, -30.0f));
+		model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.01f));
+		staticShader.setMat4("model", model);
+		plant3.Draw(staticShader);
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-1200.0f, -40.0f, 35.0f));
+		model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.015f));
+		staticShader.setMat4("model", model);
+		plant3.Draw(staticShader);
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-1150.0f, 0.0f, -205.0f));
+		model = glm::scale(model, glm::vec3(10.0f));
+		staticShader.setMat4("model", model);
+		helecho.Draw(staticShader);
+
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-1150.0f, 0.0f, 205.0f));
+		model = glm::scale(model, glm::vec3(10.0f));
+		staticShader.setMat4("model", model);
+		helecho.Draw(staticShader);
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-1000.0f, 0.0f, 90.0f));
+		model = glm::scale(model, glm::vec3(1.0f));
+		staticShader.setMat4("model", model);
+		fPlant.Draw(staticShader);
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-1000.0f, 0.0f, -200.0f));
+		model = glm::scale(model, glm::vec3(1.0f));
+		staticShader.setMat4("model", model);
+		fPlant.Draw(staticShader);
+
+		/*model = glm::translate(glm::mat4(1.0f), glm::vec3(-1200.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.0f));
+		staticShader.setMat4("model", model);
+		plant4.Draw(staticShader);
+		*/
+
+
 
 
 
