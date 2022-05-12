@@ -43,7 +43,7 @@ GLFWmonitor *monitors;
 void getResolution(void);
 
 // camera
-Camera camera(glm::vec3(0.0f, 10.0f, 90.0f));
+Camera camera(glm::vec3(0.0f, 100.0f, 2000.0f));
 float MovementSpeed = 1500.0f; //VELOCIDAD DE LA CAMARA
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
@@ -64,6 +64,7 @@ glm::vec3 lightDirection(0.0f, -1.0f, -1.0f);
 //float y = 0.0f;
 //VARIABLES BRYAN
 float
+B=0,
 
 movPtero1_x = 0.0f,
 movPtero1_z = 0.0f,
@@ -84,7 +85,10 @@ orientaPtero4 = 0.0f,
 movGEsfera_x = -65.0f,
 movGEsfera_z = 700.0f,
 orientaGEsfera = 180.0f,
-GEsferaStop = 0.0f;
+GEsferaStop = 0.0f,
+
+movHuevoX = 0.0f,
+movHuevoY =0.0f;
 
 
 bool	animacion = false,
@@ -95,6 +99,10 @@ recorrido4 = false,
 recorrido5 = false,
 recorrido6 = false,
 animacion2 = false,
+
+animaHuevo=true,
+animaHuevo1 = true,
+animaHuevo2 = false,
 
 animaPtero = true,
 
@@ -446,6 +454,21 @@ void animate(void) //Ciclo de animado
 				Ptero4Reco1 = true;
 			}
 		}
+	}
+
+
+	if (animaHuevo) {
+		B = 1;
+		if (B==1) {
+			movHuevoX += 0.5;
+		}
+
+
+
+
+
+
+
 	}
 
 	//Animacion girosfera
@@ -914,6 +937,7 @@ int main()
 
 		//huevo1
 		model = glm::translate(glm::mat4(1.0f), glm::vec3(1150.0f, 10.0f, -790.0f));
+		tmp = model = glm::rotate(model, glm::radians(movHuevoX), glm::vec3(0.0f, 0.0f, 1.0f));
 		model = glm::scale(model, glm::vec3(10.0f));
 		staticShader.setMat4("model", model);
 		huevo1.Draw(staticShader);
