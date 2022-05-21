@@ -6,11 +6,14 @@
 #include <Windows.h>
 #include <glad/glad.h>
 #include <glfw3.h>	//main
+//#include <AL/al.h>
+//#include <Al/alc.h>
 #include <stdlib.h>		
 #include <glm/glm.hpp>	//camera y model
 #include <glm/gtc/matrix_transform.hpp>	//camera y model
 #include <glm/gtc/type_ptr.hpp>
 #include <time.h>
+//#include <GL/glut.h>
 
 //Propiedades de congfig general version conjunto de herramientas v142 y version de SDK
 #define STB_IMAGE_IMPLEMENTATION
@@ -20,11 +23,16 @@
 #include <SDL/SDL.h>
 
 #include <shader_m.h>
+//#include <audio_file.h>
+//#include <audio_format.h>
 #include <camera.h>
 #include <modelAnim.h>
 #include <model.h>
 #include <Skybox.h>
 #include <iostream>
+
+
+
 
 //#pragma comment(lib, "winmm.lib")
 
@@ -56,7 +64,10 @@ double	deltaTime = 0.0f,
 		lastFrame = 0.0f;
 
 //Lighting
-glm::vec3 lightPosition(0.0f, 4.0f, -10.0f);
+glm::vec3 lightPosition(0.0f, 4.0f, 400.0f);
+glm::vec3 lightPosition2(1020.0f, 4.0f, -750.0f);
+glm::vec3 lightPosition3(-50.0f, 4.0f, -1300.0f);
+
 glm::vec3 lightDirection(0.0f, -1.0f, -1.0f);
 
 // posiciones
@@ -66,20 +77,20 @@ glm::vec3 lightDirection(0.0f, -1.0f, -1.0f);
 float
 B=0,
 
-movPtero1_x = 0.0f,
+movPtero1_x = -100.0f,
 movPtero1_z = 0.0f,
 orientaPtero1 = 0.0f,
 
 movPtero2_x = 0.0f,
-movPtero2_z = 0.0f,
+movPtero2_z = 100.0f,
 orientaPtero2 = 0.0f,
 
-movPtero3_x = 0.0f,
+movPtero3_x = 100.0f,
 movPtero3_z = 0.0f,
 orientaPtero3 = 0.0f,
 
 movPtero4_x = 0.0f,
-movPtero4_z = 0.0f,
+movPtero4_z = -100.0f,
 orientaPtero4 = 0.0f,
 
 movGEsfera_x = -65.0f,
@@ -110,21 +121,29 @@ Ptero1Reco1 = true,
 Ptero1Reco2 = false,
 Ptero1Reco3 = false,
 Ptero1Reco4 = false,
+Ptero1Reco5 = false,
+Ptero1Reco6 = false,
 
 Ptero2Reco1 = false,
 Ptero2Reco2 = true,
 Ptero2Reco3 = false,
 Ptero2Reco4 = false,
+Ptero2Reco5 = false,
+Ptero2Reco6 = false,
 
 Ptero3Reco1 = false,
 Ptero3Reco2 = false,
 Ptero3Reco3 = true,
 Ptero3Reco4 = false,
+Ptero3Reco5 = false,
+Ptero3Reco6 = false,
 
 Ptero4Reco1 = false,
 Ptero4Reco2 = false,
 Ptero4Reco3 = false,
 Ptero4Reco4 = true,
+Ptero4Reco5 = false,
+Ptero4Reco6 = false,
 
 animaGEsfera = true,
 
@@ -137,7 +156,22 @@ GEsferaReco6 = false,
 GEsferaReco7 = false,
 GEsferaReco8 = false;
 
-
+float	miVariable = 0.0f,
+noche = 0.0f,
+contNoche = 0.0f,
+sol = 0.05f,
+cY = 0,
+cX = 0,
+cZ = 0,
+cY2 = 0,
+cX2 = 0,
+cZ2 = 0,
+luzX = 0,
+luzY = 0,
+luzZ = 0,
+vigilanciaX = 0.0f,
+vigilanciaY = 0,
+vigilanciaZ = 0.0f;
 
 bool avanza = false;
 float giroLlantas = 0.0f; //VARIABLE DE GIRO DE LLANTAS 
@@ -283,16 +317,76 @@ void animate(void) //Ciclo de animado
 		}
 	}
 
+
+	//ANIMACION DIA_NOCHE Y LUZ
+	if (noche == 0.0f)
+	{
+		if (sol >= 0.8f)
+		{
+			sol = 0.8f;
+			contNoche = 0.0f;
+			noche = 1.0f;
+			cX = 1;
+			cY = rand() % 2;
+			cZ = rand() % 2;
+
+			cX2 = rand() % 2;
+			cY2 = 0.1;
+			cZ2 = rand() % 2;
+
+		}
+		else {
+
+			luzX = 0;
+			luzY = 0;
+			luzZ = 0;
+
+			vigilanciaX = 0,
+			vigilanciaY = 0,
+			vigilanciaZ = 0;
+
+			sol += 0.002f;
+		}
+	}
+	else
+	{
+		if (sol <= 0.2f) {
+			sol = 0.2f;
+			if (contNoche <= 1.0f) {
+
+				lightPosition.x = 300.0f * cos(miVariable);
+				lightPosition.z = 300.0f * sin(miVariable);
+				miVariable += 0.01f;
+				contNoche += 0.001f;
+
+				vigilanciaX = cX;
+				vigilanciaY = cY;
+				vigilanciaZ = cZ;
+
+				luzX = 0;
+				luzY = 1;
+				luzZ = 0;
+			}
+			else {
+				contNoche = 0.0f;
+				noche = 0.0f;
+			}
+		}
+		else {
+			sol -= 0.001f;
+		}
+	}
+
 	//ANIMACIONES B
 	//ANIMA-PTERODACTILO
 	if (animaPtero) {
 
 		//PTERODACTILO 1
 		if (Ptero1Reco1) {
-			movPtero1_x = -75.0f;
-			movPtero1_z += 1.0f;
-			orientaPtero1 = 0.0f;
-			if (movPtero1_z >= 75.0f) {
+			movPtero1_x += (0.25f * 1.3f);
+			movPtero1_z += (1.0f * 1.3f);
+			orientaPtero1 = 14.03f;
+			if (movPtero1_z >= 100.0f) {
 				Ptero1Reco1 = false;
 				Ptero1Reco2 = true;
 			}
@@ -300,7 +394,7 @@ void animate(void) //Ciclo de animado
 
 		if (Ptero1Reco2) {
 			movPtero1_x += 1.0f;
-			movPtero1_z = 75.0f;
+			movPtero1_z = 100.0f;
 			orientaPtero1 = 90.0f;
 			if (movPtero1_x >= 75.0f) {
 				Ptero1Reco2 = false;
@@ -309,31 +403,51 @@ void animate(void) //Ciclo de animado
 		}
 
 		if (Ptero1Reco3) {
-			movPtero1_x = 75.0f;
-			movPtero1_z -= 1.0f;
-			orientaPtero1 = 180.0f;
-			if (movPtero1_z <= -75.0f) {
+			movPtero1_x += (0.25f * 1.3f);
+			movPtero1_z -= (1.0f * 1.3f);
+			orientaPtero1 = 165.97f;
+			if (movPtero1_z <= 0.0f) {
 				Ptero1Reco3 = false;
 				Ptero1Reco4 = true;
 			}
 		}
 
 		if (Ptero1Reco4) {
+			movPtero1_x -= (0.25f * 1.3f);
+			movPtero1_z -= (1.0f * 1.3f);
+			orientaPtero1 = 194.03f;
+			if (movPtero1_x <= 75.0f) {
+				Ptero1Reco4 = false;
+				Ptero1Reco5 = true;
+			}
+		}
+
+		if (Ptero1Reco5) {
 			movPtero1_x -= 1.0f;
-			movPtero1_z = -75.0f;
+			movPtero1_z = -100.0f;
 			orientaPtero1 = 270.0f;
 			if (movPtero1_x <= -75.0f) {
-				Ptero1Reco4 = false;
+				Ptero1Reco5 = false;
+				Ptero1Reco6 = true;
+			}
+		}
+
+		if (Ptero1Reco6) {
+			movPtero1_x -= (0.25f * 1.3f);
+			movPtero1_z += (1.0f * 1.3f);
+			orientaPtero1 = 345.97f;
+			if (movPtero1_x <= -100.0f) {
+				Ptero1Reco6 = false;
 				Ptero1Reco1 = true;
 			}
 		}
 		//---------------------------------------------------------
 				//PTERODACTILO 2
 		if (Ptero2Reco1) {
-			movPtero2_x = -75.0f;
-			movPtero2_z += 1.0f;
-			orientaPtero2 = 0.0f;
-			if (movPtero2_z >= 75.0f) {
+			movPtero2_x += (0.25f * 1.3f);
+			movPtero2_z += (1.0f * 1.3f);
+			orientaPtero2 = 14.03f;
+			if (movPtero2_z >= 100.0f) {
 				Ptero2Reco1 = false;
 				Ptero2Reco2 = true;
 			}
@@ -341,7 +455,7 @@ void animate(void) //Ciclo de animado
 
 		if (Ptero2Reco2) {
 			movPtero2_x += 1.0f;
-			movPtero2_z = 75.0f;
+			movPtero2_z = 100.0f;
 			orientaPtero2 = 90.0f;
 			if (movPtero2_x >= 75.0f) {
 				Ptero2Reco2 = false;
@@ -350,21 +464,41 @@ void animate(void) //Ciclo de animado
 		}
 
 		if (Ptero2Reco3) {
-			movPtero2_x = 75.0f;
-			movPtero2_z -= 1.0f;
-			orientaPtero2 = 180.0f;
-			if (movPtero2_z <= -75.0f) {
+			movPtero2_x += (0.25f * 1.3f);
+			movPtero2_z -= (1.0f * 1.3f);
+			orientaPtero2 = 165.97f;
+			if (movPtero2_z <= 0.0f) {
 				Ptero2Reco3 = false;
 				Ptero2Reco4 = true;
 			}
 		}
 
 		if (Ptero2Reco4) {
+			movPtero2_x -= (0.25f * 1.3f);
+			movPtero2_z -= (1.0f * 1.3f);
+			orientaPtero2 = 194.03f;
+			if (movPtero2_x <= 75.0f) {
+				Ptero2Reco4 = false;
+				Ptero2Reco5 = true;
+			}
+		}
+
+		if (Ptero2Reco5) {
 			movPtero2_x -= 1.0f;
-			movPtero2_z = -75.0f;
+			movPtero2_z = -100.0f;
 			orientaPtero2 = 270.0f;
 			if (movPtero2_x <= -75.0f) {
-				Ptero2Reco4 = false;
+				Ptero2Reco5 = false;
+				Ptero2Reco6 = true;
+			}
+		}
+
+		if (Ptero2Reco6) {
+			movPtero2_x -= (0.25f * 1.3f);
+			movPtero2_z += (1.0f * 1.3f);
+			orientaPtero2 = 345.97f;
+			if (movPtero2_x <= -100.0f) {
+				Ptero2Reco6 = false;
 				Ptero2Reco1 = true;
 			}
 		}
@@ -373,10 +507,10 @@ void animate(void) //Ciclo de animado
 			//PTERODACTILO 3
 
 		if (Ptero3Reco1) {
-			movPtero3_x = -75.0f;
-			movPtero3_z += 1.0f;
-			orientaPtero3 = 0.0f;
-			if (movPtero3_z >= 75.0f) {
+			movPtero3_x += (0.25f * 1.3f);
+			movPtero3_z += (1.0f * 1.3f);
+			orientaPtero3 = 14.03f;
+			if (movPtero3_z >= 100.0f) {
 				Ptero3Reco1 = false;
 				Ptero3Reco2 = true;
 			}
@@ -384,7 +518,7 @@ void animate(void) //Ciclo de animado
 
 		if (Ptero3Reco2) {
 			movPtero3_x += 1.0f;
-			movPtero3_z = 75.0f;
+			movPtero3_z = 100.0f;
 			orientaPtero3 = 90.0f;
 			if (movPtero3_x >= 75.0f) {
 				Ptero3Reco2 = false;
@@ -393,21 +527,41 @@ void animate(void) //Ciclo de animado
 		}
 
 		if (Ptero3Reco3) {
-			movPtero3_x = 75.0f;
-			movPtero3_z -= 1.0f;
-			orientaPtero3 = 180.0f;
-			if (movPtero3_z <= -75.0f) {
+			movPtero3_x += (0.25f * 1.3f);
+			movPtero3_z -= (1.0f * 1.3f);
+			orientaPtero3 = 165.97f;
+			if (movPtero3_z <= 0.0f) {
 				Ptero3Reco3 = false;
 				Ptero3Reco4 = true;
 			}
 		}
 
 		if (Ptero3Reco4) {
+			movPtero3_x -= (0.25f * 1.3f);
+			movPtero3_z -= (1.0f * 1.3f);
+			orientaPtero3 = 194.03f;
+			if (movPtero3_x <= 75.0f) {
+				Ptero3Reco4 = false;
+				Ptero3Reco5 = true;
+			}
+		}
+
+		if (Ptero3Reco5) {
 			movPtero3_x -= 1.0f;
-			movPtero3_z = -75.0f;
+			movPtero3_z = -100.0f;
 			orientaPtero3 = 270.0f;
 			if (movPtero3_x <= -75.0f) {
-				Ptero3Reco4 = false;
+				Ptero3Reco5 = false;
+				Ptero3Reco6 = true;
+			}
+		}
+
+		if (Ptero3Reco6) {
+			movPtero3_x -= (0.25f * 1.3f);
+			movPtero3_z += (1.0f * 1.3f);
+			orientaPtero3 = 345.97f;
+			if (movPtero3_x <= -100.0f) {
+				Ptero3Reco6 = false;
 				Ptero3Reco1 = true;
 			}
 		}
@@ -416,10 +570,10 @@ void animate(void) //Ciclo de animado
 			//PTERODACTILO 4
 
 		if (Ptero4Reco1) {
-			movPtero4_x = -75.0f;
-			movPtero4_z += 1.0f;
-			orientaPtero4 = 0.0f;
-			if (movPtero4_z >= 75.0f) {
+			movPtero4_x += (0.25f * 1.3f);
+			movPtero4_z += (1.0f * 1.3f);
+			orientaPtero4 = 14.03f;
+			if (movPtero4_z >= 100.0f) {
 				Ptero4Reco1 = false;
 				Ptero4Reco2 = true;
 			}
@@ -427,7 +581,7 @@ void animate(void) //Ciclo de animado
 
 		if (Ptero4Reco2) {
 			movPtero4_x += 1.0f;
-			movPtero4_z = 75.0f;
+			movPtero4_z = 100.0f;
 			orientaPtero4 = 90.0f;
 			if (movPtero4_x >= 75.0f) {
 				Ptero4Reco2 = false;
@@ -436,191 +590,203 @@ void animate(void) //Ciclo de animado
 		}
 
 		if (Ptero4Reco3) {
-			movPtero4_x = 75.0f;
-			movPtero4_z -= 1.0f;
-			orientaPtero4 = 180.0f;
-			if (movPtero4_z <= -75.0f) {
+			movPtero4_x += (0.25f * 1.3f);
+			movPtero4_z -= (1.0f * 1.3f);
+			orientaPtero4 = 165.97f;
+			if (movPtero4_z <= 0.0f) {
 				Ptero4Reco3 = false;
 				Ptero4Reco4 = true;
 			}
 		}
 
 		if (Ptero4Reco4) {
+			movPtero4_x -= (0.25f * 1.3f);
+			movPtero4_z -= (1.0f * 1.3f);
+			orientaPtero4 = 194.03f;
+			if (movPtero4_x <= 75.0f) {
+				Ptero4Reco4 = false;
+				Ptero4Reco5 = true;
+			}
+		}
+
+		if (Ptero4Reco5) {
 			movPtero4_x -= 1.0f;
-			movPtero4_z = -75.0f;
+			movPtero4_z = -100.0f;
 			orientaPtero4 = 270.0f;
 			if (movPtero4_x <= -75.0f) {
-				Ptero4Reco4 = false;
+				Ptero4Reco5 = false;
+				Ptero4Reco6 = true;
+			}
+		}
+
+		if (Ptero4Reco6) {
+			movPtero4_x -= (0.25f * 1.3f);
+			movPtero4_z += (1.0f * 1.3f);
+			orientaPtero4 = 345.97f;
+			if (movPtero4_x <= -100.0f) {
+				Ptero4Reco6 = false;
 				Ptero4Reco1 = true;
 			}
 		}
 	}
 
+		//ANIMACION HUEVO
 
-	if (animaHuevo) {
-		B = 1;
-		if (B==1) {
-			movHuevoX += 0.5;
+		if (animaHuevo) {
+			B = 1;
+			if (B == 1) {
+				movHuevoX += 0.5;
+			}
 		}
 
+		//Animacion girosfera
+		if (animaGEsfera) {
 
-
-
-
-
-
-	}
-
-	//Animacion girosfera
-	if (animaGEsfera) {
-
-		if (GEsferaReco1) {
-			movGEsfera_x = -55.0f;
-			movGEsfera_z -= 3.0f;
-			orientaGEsfera = 180.0f;
-			if (movGEsfera_z <= -350.0f) {
-
+			if (GEsferaReco1) {
 				movGEsfera_x = -55.0f;
-				movGEsfera_z = -350.0f;
-				GEsferaStop += 0.07f;
+				movGEsfera_z -= 3.0f;
+				orientaGEsfera = 180.0f;
+				if (movGEsfera_z <= -350.0f) {
 
-				if (GEsferaStop >= 2.0f) {
-					GEsferaStop = 0.0f;
-					GEsferaReco1 = false;
-					GEsferaReco2 = true;
+					movGEsfera_x = -55.0f;
+					movGEsfera_z = -350.0f;
+					GEsferaStop += 0.07f;
+
+					if (GEsferaStop >= 2.0f) {
+						GEsferaStop = 0.0f;
+						GEsferaReco1 = false;
+						GEsferaReco2 = true;
+					}
 				}
 			}
-		}
 
-		if (GEsferaReco2) {
-			movGEsfera_x += (0.78f * 2.0f);
-			movGEsfera_z -= (1.0f * 2.0f);
-			orientaGEsfera = 180.0f;
-			if (movGEsfera_x >= 180.0f) {
+			if (GEsferaReco2) {
+				movGEsfera_x += (0.78f * 2.0f);
+				movGEsfera_z -= (1.0f * 2.0f);
+				orientaGEsfera = 180.0f;
+				if (movGEsfera_x >= 180.0f) {
 
+					movGEsfera_x = 180.0f;
+					movGEsfera_z = -650.0f;
+					GEsferaStop += 0.07f;
+
+					if (GEsferaStop >= 2.0f) {
+						GEsferaStop = 0.0f;
+						GEsferaReco2 = false;
+						GEsferaReco3 = true;
+					}
+
+				}
+			}
+
+			if (GEsferaReco3) {
 				movGEsfera_x = 180.0f;
-				movGEsfera_z = -650.0f;
-				GEsferaStop += 0.07f;
+				movGEsfera_z -= 3;
+				orientaGEsfera = 180.0f;
+				if (movGEsfera_z <= -800.0f) {
 
-				if (GEsferaStop >= 2.0f) {
-					GEsferaStop = 0.0f;
-					GEsferaReco2 = false;
-					GEsferaReco3 = true;
-				}
+					movGEsfera_x = 180.0f;
+					movGEsfera_z = -800.0f;
+					GEsferaStop += 0.07f;
 
-			}
-		}
-
-		if (GEsferaReco3) {
-			movGEsfera_x = 180.0f;
-			movGEsfera_z -= 3;
-			orientaGEsfera = 180.0f;
-			if (movGEsfera_z <= -800.0f) {
-
-				movGEsfera_x = 180.0f;
-				movGEsfera_z = -800.0f;
-				GEsferaStop += 0.07f;
-
-				if (GEsferaStop >= 2.0f) {
-					GEsferaStop = 0.0f;
-					GEsferaReco3 = false;
-					GEsferaReco4 = true;
+					if (GEsferaStop >= 2.0f) {
+						GEsferaStop = 0.0f;
+						GEsferaReco3 = false;
+						GEsferaReco4 = true;
+					}
 				}
 			}
-		}
 
-		if (GEsferaReco4) {
-			movGEsfera_x -= (0.76f * 2.0f);
-			movGEsfera_z -= (1.0f * 2.0f);
-			orientaGEsfera = 180.0f;
-			if (movGEsfera_x <= -50.0f) {
+			if (GEsferaReco4) {
+				movGEsfera_x -= (0.76f * 2.0f);
+				movGEsfera_z -= (1.0f * 2.0f);
+				orientaGEsfera = 180.0f;
+				if (movGEsfera_x <= -50.0f) {
 
-				movGEsfera_x = -50.0f;
-				movGEsfera_z = -1100.0f;
-				GEsferaStop += 0.07f;
+					movGEsfera_x = -50.0f;
+					movGEsfera_z = -1100.0f;
+					GEsferaStop += 0.07f;
 
-				if (GEsferaStop >= 2.0f) {
-					GEsferaStop = 0.0f;
-					GEsferaReco4 = false;
-					GEsferaReco5 = true;
+					if (GEsferaStop >= 2.0f) {
+						GEsferaStop = 0.0f;
+						GEsferaReco4 = false;
+						GEsferaReco5 = true;
+					}
 				}
 			}
-		}
 
-		if (GEsferaReco5) {
-			movGEsfera_x -= (1.075f * 2.0f);
-			movGEsfera_z += (1.0f * 2.0f);
-			orientaGEsfera = 180.0f;
-			if (movGEsfera_z >= -900.0f) {
+			if (GEsferaReco5) {
+				movGEsfera_x -= (1.075f * 2.0f);
+				movGEsfera_z += (1.0f * 2.0f);
+				orientaGEsfera = 180.0f;
+				if (movGEsfera_z >= -900.0f) {
 
+					movGEsfera_x = -270.0f;
+					movGEsfera_z = -900.0f;
+					GEsferaStop += 0.07f;
+
+					if (GEsferaStop >= 2.0f) {
+						GEsferaStop = 0.0f;
+						GEsferaReco5 = false;
+						GEsferaReco6 = true;
+					}
+				}
+			}
+
+			if (GEsferaReco6) {
 				movGEsfera_x = -270.0f;
-				movGEsfera_z = -900.0f;
-				GEsferaStop += 0.07f;
+				movGEsfera_z += 3;
+				orientaGEsfera = 180.0f;
+				if (movGEsfera_z >= -750.0f) {
 
-				if (GEsferaStop >= 2.0f) {
-					GEsferaStop = 0.0f;
-					GEsferaReco5 = false;
-					GEsferaReco6 = true;
+					movGEsfera_x = -270.0f;
+					movGEsfera_z = -750.0f;
+					GEsferaStop += 0.07f;
+
+					if (GEsferaStop >= 2.0f) {
+						GEsferaStop = 0.0f;
+						GEsferaReco6 = false;
+						GEsferaReco7 = true;
+					}
 				}
 			}
-		}
 
-		if (GEsferaReco6) {
-			movGEsfera_x = -270.0f;
-			movGEsfera_z += 3;
-			orientaGEsfera = 180.0f;
-			if (movGEsfera_z >= -750.0f) {
-
+			if (GEsferaReco7) {
 				movGEsfera_x = -270.0f;
-				movGEsfera_z = -750.0f;
-				GEsferaStop += 0.07f;
+				movGEsfera_z += 3;
+				orientaGEsfera = 180.0f;
+				if (movGEsfera_z >= -650.0f) {
 
-				if (GEsferaStop >= 2.0f) {
-					GEsferaStop = 0.0f;
-					GEsferaReco6 = false;
-					GEsferaReco7 = true;
+					movGEsfera_x = -270.0f;
+					movGEsfera_z = -650.0f;
+					GEsferaStop += 0.07f;
+
+					if (GEsferaStop >= 2.0f) {
+ 						GEsferaStop = 0.0f;
+						GEsferaReco7 = false;
+						GEsferaReco8 = true;
+					}
+				}
+			}
+
+			if (GEsferaReco8) {
+				movGEsfera_x += (0.71f * 2.0f);
+				movGEsfera_z += (1.0f * 2.0f);;
+				orientaGEsfera = 180.0f;
+				if (movGEsfera_z >= -350.0f) {
+
+					movGEsfera_x = -55.0f;
+					movGEsfera_z = -350.0f;
+					GEsferaStop += 0.07f;
+
+					if (GEsferaStop >= 2.0f) {
+						GEsferaStop = 0.0f;
+						GEsferaReco8 = false;
+						GEsferaReco2 = true;
+					}
 				}
 			}
 		}
-
-		if (GEsferaReco7) {
-			movGEsfera_x = -270.0f;
-			movGEsfera_z += 3;
-			orientaGEsfera = 180.0f;
-			if (movGEsfera_z >= -650.0f) {
-
-				movGEsfera_x = -270.0f;
-				movGEsfera_z = -650.0f;
-				GEsferaStop += 0.07f;
-
-				if (GEsferaStop >= 2.0f) {
-					GEsferaStop = 0.0f;
-					GEsferaReco7 = false;
-					GEsferaReco8 = true;
-				}
-			}
-		}
-
-		if (GEsferaReco8) {
-			movGEsfera_x += (0.68f * 2.0f);
-			movGEsfera_z += (1.0f * 2.0f);;
-			orientaGEsfera = 180.0f;
-			if (movGEsfera_z >= -350.0f) {
-
-				movGEsfera_x = -65.0f;
-				movGEsfera_z = -350.0f;
-				GEsferaStop += 0.07f;
-
-				if (GEsferaStop >= 2.0f) {
-					GEsferaStop = 0.0f;
-					GEsferaReco8 = false;
-					GEsferaReco2 = true;
-				}
-			}
-		}
-	}
-
-	
 }
 
 void getResolution()
@@ -721,6 +887,10 @@ int main()
 	Model camino("resources/objects/camino/rwk.obj");
 	Model puerta("resources/objects/puerta/puerta1.obj");
 	Model restroom("resources/objects/restroom/rest.obj");
+	Model arbol1("resources/objects/arbol1/ab1.obj");
+	Model arbol2("resources/objects/arbol2/ab2.obj");
+	Model roca1("resources/objects/roca1/rc1.obj");
+	Model roca2("resources/objects/roca2/rc2.obj");
 
 	Model riel1("resources/objects/riel1/r1.obj");
 	Model riel2("resources/objects/riel2/r2.obj");
@@ -808,25 +978,33 @@ int main()
 		//Setup Advanced Lights
 		staticShader.setVec3("viewPos", camera.Position);
 		staticShader.setVec3("dirLight.direction", lightDirection);
-		staticShader.setVec3("dirLight.ambient", glm::vec3(1.0f, 1.0f, 1.0f));
+		staticShader.setVec3("dirLight.ambient", glm::vec3(sol, sol, sol));
 		staticShader.setVec3("dirLight.diffuse", glm::vec3(0.0f, 0.0f, 0.0f));
 		staticShader.setVec3("dirLight.specular", glm::vec3(0.0f, 0.0f, 0.0f));
 
 		staticShader.setVec3("pointLight[0].position", lightPosition);
-		staticShader.setVec3("pointLight[0].ambient", glm::vec3(0.0f, 0.0f, 0.0f));
-		staticShader.setVec3("pointLight[0].diffuse", glm::vec3(0.0f, 0.0f, 0.0f));
+		staticShader.setVec3("pointLight[0].ambient", glm::vec3(vigilanciaX, vigilanciaY, vigilanciaZ));
+		staticShader.setVec3("pointLight[0].diffuse", glm::vec3(vigilanciaX, vigilanciaY, vigilanciaZ));
 		staticShader.setVec3("pointLight[0].specular", glm::vec3(0.0f, 0.0f, 0.0f));
-		staticShader.setFloat("pointLight[0].constant", 0.08f);
-		staticShader.setFloat("pointLight[0].linear", 0.009f);
-		staticShader.setFloat("pointLight[0].quadratic", 0.032f);
+		staticShader.setFloat("pointLight[0].constant", 0.0000008f);
+		staticShader.setFloat("pointLight[0].linear", 0.0000009f);
+		staticShader.setFloat("pointLight[0].quadratic", 0.00032f);
 
-		staticShader.setVec3("pointLight[1].position", glm::vec3(-80.0, 0.0f, 0.0f));
-		staticShader.setVec3("pointLight[1].ambient", glm::vec3(0.0f, 0.0f, 0.0f));
-		staticShader.setVec3("pointLight[1].diffuse", glm::vec3(0.0f, 0.0f, 0.0f));
+		staticShader.setVec3("pointLight[1].position", lightPosition2);//
+		staticShader.setVec3("pointLight[1].ambient", glm::vec3(luzX, luzY, luzZ));
+		staticShader.setVec3("pointLight[1].diffuse", glm::vec3(luzX, luzY, luzZ));
 		staticShader.setVec3("pointLight[1].specular", glm::vec3(0.0f, 0.0f, 0.0f));
-		staticShader.setFloat("pointLight[1].constant", 1.0f);
+		staticShader.setFloat("pointLight[1].constant", 0.008f);
 		staticShader.setFloat("pointLight[1].linear", 0.009f);
-		staticShader.setFloat("pointLight[1].quadratic", 0.032f);
+		staticShader.setFloat("pointLight[1].quadratic", 0.0000022f);
+
+		staticShader.setVec3("pointLight[2].position", lightPosition3);//
+		staticShader.setVec3("pointLight[2].ambient", glm::vec3(luzX, luzY, luzZ));
+		staticShader.setVec3("pointLight[2].diffuse", glm::vec3(luzX, luzY, luzZ));
+		staticShader.setVec3("pointLight[2].specular", glm::vec3(0.0f, 0.0f, 0.0f));
+		staticShader.setFloat("pointLight[2].constant", 0.008f);
+		staticShader.setFloat("pointLight[2].linear", 0.009f);
+		staticShader.setFloat("pointLight[2].quadratic", 0.0000022f);
 
 		staticShader.setFloat("material_shininess", 32.0f);
 
@@ -900,9 +1078,31 @@ int main()
 		helecho.Draw(staticShader);
 
 		model = glm::translate(glm::mat4(1.0f), glm::vec3(1180.0f, 0.0f, -800.0f));
-		model = glm::scale(model, glm::vec3(1.0f));
+		model = glm::scale(model, glm::vec3(2.0f));
 		staticShader.setMat4("model", model);
 		fPlant.Draw(staticShader);
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(400.0f, 0.0f, -1000.0f));
+		model = glm::scale(model, glm::vec3(4.0f));
+		staticShader.setMat4("model", model);
+		fPlant.Draw(staticShader);
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-280.0f, 0.0f, -1000.0f));
+		model = glm::scale(model, glm::vec3(4.0f));
+		staticShader.setMat4("model", model);
+		fPlant.Draw(staticShader);
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-1080.0f, 0.0f, -500.0f));
+		model = glm::scale(model, glm::vec3(4.0f));
+		staticShader.setMat4("model", model);
+		fPlant.Draw(staticShader);
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-1100.0f, 0.0f, 400.0f));
+		model = glm::scale(model, glm::vec3(4.0f));
+		staticShader.setMat4("model", model);
+		fPlant.Draw(staticShader);
+
+	
 
 		/*
 		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -1100.0f));
@@ -912,14 +1112,14 @@ int main()
 		*/
 		//Cabeza REX
 		
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -150.0f, -1300.0f));
-		model = glm::scale(model, glm::vec3(1.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -450.0f, -1500.0f));
+		model = glm::scale(model, glm::vec3(3.0f));
 		staticShader.setMat4("model", model);
 		cabezarex.Draw(staticShader);
 		
 
 		//Escultura
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(-450.0f, -150.0f, 100.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-450.0f, -150.0f, 200.0f));
 		model = glm::scale(model, glm::vec3(1.0f));
 		staticShader.setMat4("model", model);
 		escultrex.Draw(staticShader);
@@ -1006,6 +1206,77 @@ int main()
 		staticShader.setMat4("model", model);
 		helecho.Draw(staticShader);
 
+		//ARBOLES
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-750.0f, 0.0f, -205.0f));
+		model = glm::scale(model, glm::vec3(0.2f));
+		staticShader.setMat4("model", model);
+		arbol1.Draw(staticShader);
+
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-850.0f, 0.0f, -605.0f));
+		model = glm::scale(model, glm::vec3(0.2f));
+		staticShader.setMat4("model", model);
+		arbol1.Draw(staticShader);
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(500.0f, 0.0f, 505.0f));
+		model = glm::scale(model, glm::vec3(0.2f));
+		staticShader.setMat4("model", model);
+		arbol1.Draw(staticShader);
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(850.0f, 0.0f, -205.0f));
+		model = glm::scale(model, glm::vec3(0.2f));
+		staticShader.setMat4("model", model);
+		arbol1.Draw(staticShader);
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(550.0f, 0.0f, 1005.0f));
+		model = glm::scale(model, glm::vec3(100.0f));
+		staticShader.setMat4("model", model);
+		arbol2.Draw(staticShader);
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-500.0f, 0.0f, 705.0f));
+		model = glm::scale(model, glm::vec3(100.0f));
+		staticShader.setMat4("model", model);
+		arbol2.Draw(staticShader);
+
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(500.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(100.0f));
+		staticShader.setMat4("model", model);
+		arbol2.Draw(staticShader);
+
+		//ROCAS
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-600.0f, 0.0f, 100.0f));
+		model = glm::scale(model, glm::vec3(4.0f));
+		staticShader.setMat4("model", model);
+		roca1.Draw(staticShader);
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-490.0f, 0.0f, 600.0f));
+		model = glm::scale(model, glm::vec3(1.0f));
+		staticShader.setMat4("model", model);
+		roca2.Draw(staticShader);
+
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(500.0f, 0.0f, -50.0f));
+		model = glm::scale(model, glm::vec3(3.0f));
+		staticShader.setMat4("model", model);
+		roca1.Draw(staticShader);
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(690.0f, 0.0f, 50.0f));
+		model = glm::scale(model, glm::vec3(0.5f));
+		staticShader.setMat4("model", model);
+		roca2.Draw(staticShader);
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(890.0f, 0.0f, 50.0f));
+		model = glm::scale(model, glm::vec3(0.5f));
+		staticShader.setMat4("model", model);
+		roca2.Draw(staticShader);
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(790.0f, 0.0f, -150.0f));
+		model = glm::scale(model, glm::vec3(0.5f));
+		staticShader.setMat4("model", model);
+		roca1.Draw(staticShader);
+		
 
 		//banca
 		model = glm::translate(glm::mat4(1.0f), glm::vec3(600.0f, 35.0f, 800.0f));
@@ -1016,32 +1287,49 @@ int main()
 
 
 
-
-
 		//Camino
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(1100.0f, 0.0f, -300.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 150.0f));
+		model = glm::scale(model, glm::vec3(4.0f));
+		staticShader.setMat4("model", model);
+		camino.Draw(staticShader);
+		
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(150.0f, 0.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(4.0f));
 		staticShader.setMat4("model", model);
 		camino.Draw(staticShader);
 
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(1100.0f, 0.0f, -150.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(150.0f, 0.0f, 150.0f));
 		model = glm::scale(model, glm::vec3(4.0f));
 		staticShader.setMat4("model", model);
 		camino.Draw(staticShader);
 
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(1100.0f, 0.0f, -0.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(150.0f, 0.0f, -150.0f));
+		model = glm::scale(model, glm::vec3(4.0f));
+		staticShader.setMat4("model", model);
+		camino.Draw(staticShader);
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-150.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(4.0f));
+		staticShader.setMat4("model", model);
+		camino.Draw(staticShader);
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-150.0f, 0.0f, -150.0f));
+		model = glm::scale(model, glm::vec3(4.0f));
+		staticShader.setMat4("model", model);
+		camino.Draw(staticShader);
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-150.0f, 0.0f, 150.0f));
+		model = glm::scale(model, glm::vec3(4.0f));
+		staticShader.setMat4("model", model);
+		camino.Draw(staticShader);
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -300.0f));
 		model = glm::scale(model, glm::vec3(4.0f));
 		staticShader.setMat4("model", model);
 		camino.Draw(staticShader);
 
 
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(1100.0f, 0.0f, 150.0f));
-		model = glm::scale(model, glm::vec3(4.0f));
-		staticShader.setMat4("model", model);
-		camino.Draw(staticShader);
-
-
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(1100.0f, 0.0f, 300.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 150.0f));
 		model = glm::scale(model, glm::vec3(4.0f));
 		staticShader.setMat4("model", model);
 		camino.Draw(staticShader);
