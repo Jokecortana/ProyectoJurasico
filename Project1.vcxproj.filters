@@ -58,5 +58,14 @@
     <ClInclude Include="camera.h">
       <Filter>Archivos de origen</Filter>
     </ClInclude>
+    <ClInclude Include="audio_format.h">
+      <Filter>Archivos de origen</Filter>
+    </ClInclude>
+    <ClInclude Include="include\audio_file.h">
+      <Filter>Archivos de origen</Filter>
+    </ClInclude>
+    <ClInclude Include="camera2.h">
+      <Filter>Archivos de origen</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

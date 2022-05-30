@@ -51,8 +51,8 @@ GLFWmonitor *monitors;
 void getResolution(void);
 
 // camera
-Camera camera(glm::vec3(0.0f, 100.0f, 2000.0f));
-float MovementSpeed = 1500.0f; //VELOCIDAD DE LA CAMARA
+Camera camera(glm::vec3(0.0f, 70.0f, 2000.0f));
+float MovementSpeed = 1200.0f; //VELOCIDAD DE LA CAMARA
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -64,18 +64,25 @@ double	deltaTime = 0.0f,
 		lastFrame = 0.0f;
 
 //Lighting
-glm::vec3 lightPosition(0.0f, 4.0f, 400.0f);
+
 glm::vec3 lightPosition2(1020.0f, 4.0f, -750.0f);
 glm::vec3 lightPosition3(-50.0f, 4.0f, -1300.0f);
+glm::vec3 lightPosition4(-1000.0f, 4.0f, -100.0f);
+
+glm::vec3 lightSpotlight1(0.0f, 4.0f, 400.0f);
+glm::vec3 lightSpotlight2(0.0f, 4.0f, 400.0f);
 
 glm::vec3 lightDirection(0.0f, -1.0f, -1.0f);
 
 // posiciones
 //float x = 0.0f;
 //float y = 0.0f;
-//VARIABLES BRYAN
+
 float
-B=0,
+B = 0,
+
+animAlas = 0.0f,
+alasPtero = 0.0f,
 
 movPtero1_x = -100.0f,
 movPtero1_z = 0.0f,
@@ -98,8 +105,18 @@ movGEsfera_z = 700.0f,
 orientaGEsfera = 180.0f,
 GEsferaStop = 0.0f,
 
+movDrone1_x = 1000.0f,
+movDrone1_z = -400.0f,
+orientaDrone1 = 0.0f,
+
+movDrone2_x = -700.0f,
+movDrone2_z = 250.0f,
+orientaDrone2 = 180.0f,
+
 movHuevoX = 0.0f,
-movHuevoY =0.0f;
+movHuevoY =0.0f,
+
+animaTREX = 0.0f ;
 
 
 bool	animacion = false,
@@ -111,7 +128,7 @@ recorrido5 = false,
 recorrido6 = false,
 animacion2 = false,
 
-animaHuevo=true,
+animaHuevo = true,
 animaHuevo1 = true,
 animaHuevo2 = false,
 
@@ -154,7 +171,29 @@ GEsferaReco4 = false,
 GEsferaReco5 = false,
 GEsferaReco6 = false,
 GEsferaReco7 = false,
-GEsferaReco8 = false;
+GEsferaReco8 = false,
+
+animaDrone = true,
+
+Drone2Reco1 = true,
+Drone2Reco2 = false,
+Drone2Reco3 = false,
+Drone2Reco4 = false,
+Drone2Reco5 = false,
+Drone2Reco6 = false,
+Drone2Reco7 = false,
+Drone2Reco8 = false,
+
+Drone1Reco1 = false,
+Drone1Reco2 = false,
+Drone1Reco3 = false,
+Drone1Reco4 = false,
+Drone1Reco5 = true,
+Drone1Reco6 = false,
+Drone1Reco7 = false,
+Drone1Reco8 = false,
+
+EdnaCam = false;
 
 float	miVariable = 0.0f,
 noche = 0.0f,
@@ -173,147 +212,300 @@ vigilanciaX = 0.0f,
 vigilanciaY = 0,
 vigilanciaZ = 0.0f;
 
-bool avanza = false;
-float giroLlantas = 0.0f; //VARIABLE DE GIRO DE LLANTAS 
-int reset = 0.0f;
+float rotTRex_y = 0.0f,
+	  rotTRex_x = 0.0f;
 
-//Keyframes (Manipulación y dibujo) PRACTICA 10000000000000000000000000000000000000000000
-float	posX = 0.0f,
-		posY = 0.0f,
-		posZ = 0.0f,
-		posmanY =0.0f,
-		rotRodIzq = 0.0f,
-		rotRodDer = 0.0f,
-		giroMonito = 0.0f,
-		movBrazoIzq=0.0f,
-		movBrazoDer = 0.0f,
-		movCabeza = 0.0f;
+float	movEdnaModa_X = -700.0f,
+		movEdnaModa_Z = 650.0f;
 
-float	incX = 0.0f,
-		incY = 0.0f,
-		incZ = 0.0f,
-		rotInc = 0.0f,
-		rotDerInc = 0.0f,
-		giroMonitoInc = 0.0f,
-		movBrazoIzqInc = 0.0f,
-		movBrazoDerInc = 0.0f,
-		movCabezaInc = 0.0f;
+float scale = 10.0f;
 
+/*
+ALuint buffers[1];
+ALuint sources[2];
 
-#define MAX_FRAMES 29 
-int i_max_steps = 60; //cantidad de cuadros intermedios a calcular
-int i_curr_steps = 0; 
-typedef struct _frame //encargada de guardar la informacion 
-{
-	//Variables para GUARDAR Key Frames
-	float posX;		//Variable para PosicionX
-	float posY;		//Variable para PosicionY
-	float posZ;		//Variable para PosicionZ
-	float rotRodIzq;
-	float rotRodDer;
-	float giroMonito;
-	float movBrazoIzq;
-	float movBrazoDer;
-	float movCabeza;
-}FRAME;
+void loadAudio() {
 
-FRAME KeyFrame[MAX_FRAMES];
-int FrameIndex = 0;			//introducir datos
-bool play = false;
-int playIndex = 0;
+	ALenum alError;
+	ALCenum alcError;
 
-void saveFrame(void)
-{
-	//printf("frameindex %d\n", FrameIndex);
-	std::cout << "Frame Index = " << FrameIndex << std::endl;
+	ALCdevice* openALDevice = alcOpenDevice(NULL);
+	if (!openALDevice) return;
 
-	KeyFrame[FrameIndex].posX = posX; 
-	KeyFrame[FrameIndex].posY = posY;
-	KeyFrame[FrameIndex].posZ = posZ;
+	ALCcontext* openALContext;
+	openALContext = alcCreateContext(openALDevice, NULL);
+	alcMakeContextCurrent(openALContext);
+	alcError = alcGetError(openALDevice);
+	if (alcError != ALC_NO_ERROR) {
+		std::cerr << ("alContext :", alcError) << std::endl;
+		return;
+	}
 
-	KeyFrame[FrameIndex].rotRodIzq = rotRodIzq; //almcenado de la informacion de su posicion con L
-	KeyFrame[FrameIndex].rotRodDer = rotRodDer;
-	KeyFrame[FrameIndex].giroMonito = giroMonito; //orientacion
+	alGenBuffers(1, buffers);
 
-	KeyFrame[FrameIndex].movBrazoIzq = movBrazoIzq;
+	alError = alGetError();
+	if (alError != AL_NO_ERROR) {
+		std::cerr << ("alGenBuffers :", alError) << std::endl;
+		return;
+	}
 
-	KeyFrame[FrameIndex].movBrazoDer = movBrazoDer;
+	AudioFile JP_Theme;
+	char* JP_Theme_buffer = JP_Theme.load("resources/audio/JurassicPark_Theme.wav");
+	ALenum JP_Theme_format = get_audio_format(JP_Theme.channels, JP_Theme.bitsPerSample);
+	alBufferData(buffers[0], JP_Theme_format, JP_Theme_buffer, JP_Theme.size, JP_Theme.sampleRate);
 
-	KeyFrame[FrameIndex].movCabeza = movCabeza;
+	AudioFile Rugido_Rex;
+	char* Rugido_Rex_buffer = Rugido_Rex.load("resources/audio/Rugido_Rex.wav");
+	ALenum Rugido_Rex_format = get_audio_format(Rugido_Rex.channels, Rugido_Rex.bitsPerSample);
+	alBufferData(buffers[0], Rugido_Rex_format, Rugido_Rex_buffer, Rugido_Rex.size, Rugido_Rex.sampleRate);
 
-	FrameIndex++;
+	alDistanceModel(AL_INVERSE_DISTANCE_CLAMPED);
+	alError = alGetError();
+	if (alError != AL_NO_ERROR) {
+		std::cerr << ("alDistanceModel :", alError) << std::endl;
+		return;
+	}
+
+	alGenSources(2, sources);
+	alError = alGetError();
+	if (alError != AL_NO_ERROR) {
+		std::cerr << ("alGenSources :", alError) << std::endl;
+		return;
+	}
+
+	// Audio Tematico
+	alSourcef(sources[0], AL_PITCH, 1);
+	alSourcef(sources[0], AL_GAIN, 5.0f);
+	alSource3f(sources[0], AL_POSITION, camera.Position.x, camera.Position.y, camera.Position.z);
+	alSource3f(sources[0], AL_VELOCITY, 0, 0, 0);
+	alSourcei(sources[0], AL_LOOPING, AL_TRUE);
+	alSourcei(sources[0], AL_BUFFER, buffers[0]);
+	alError = alGetError();
+	if (alError != AL_NO_ERROR) {
+		std::cerr << ("alSource :", alError) << std::endl;
+		return;
+	}
+
+	// Audio T-Rex
+	alSourcef(sources[1], AL_PITCH, 1);
+	alSourcef(sources[1], AL_GAIN, 4.5f);
+	alSource3f(sources[1], AL_POSITION, -50.0f, 5.0f, -1100.0f);
+	alSourcef(sources[1], AL_REFERENCE_DISTANCE, 200.0f * scale);
+	alSourcef(sources[1], AL_ROLLOFF_FACTOR, 70.0f);
+	alSource3f(sources[1], AL_VELOCITY, 0, 0, 0);
+	alSourcei(sources[1], AL_LOOPING, AL_TRUE);
+	alSourcei(sources[1], AL_BUFFER, buffers[0]);
+	alError = alGetError();
+	if (alError != AL_NO_ERROR) {
+		std::cerr << ("alSource :", alError) << std::endl;
+		return;
+	}
+
+	alListener3f(AL_POSITION, camera.Position.x, camera.Position.y, camera.Position.z);
+	alListener3f(AL_VELOCITY, 0, 0, 0);
+	alListenerf(AL_GAIN, 0.99f);
+
 }
-
-void resetElements(void)
-{
-	posX = KeyFrame[0].posX;
-	posY = KeyFrame[0].posY;
-	posZ = KeyFrame[0].posZ;
-
-	rotRodIzq = KeyFrame[0].rotRodIzq;
-
-	rotRodDer = KeyFrame[0].rotRodDer;
-
-	giroMonito = KeyFrame[0].giroMonito;
-
-	movBrazoIzq = KeyFrame[0].movBrazoIzq;
-	movBrazoDer = KeyFrame[0].movBrazoDer;
-
-	movCabeza = KeyFrame[0].movCabeza;
-}
-
-void interpolation(void) //
-{
-	incX = (KeyFrame[playIndex + 1].posX - KeyFrame[playIndex].posX) / i_max_steps;
-	incY = (KeyFrame[playIndex + 1].posY - KeyFrame[playIndex].posY) / i_max_steps;
-	incZ = (KeyFrame[playIndex + 1].posZ - KeyFrame[playIndex].posZ) / i_max_steps;
-
-	rotInc = (KeyFrame[playIndex + 1].rotRodIzq - KeyFrame[playIndex].rotRodIzq) / i_max_steps;
-
-	rotDerInc = (KeyFrame[playIndex + 1].rotRodDer - KeyFrame[playIndex].rotRodDer) / i_max_steps;
-	giroMonitoInc = (KeyFrame[playIndex + 1].giroMonito - KeyFrame[playIndex].giroMonito) / i_max_steps;
-	movBrazoIzqInc = (KeyFrame[playIndex + 1].movBrazoIzq - KeyFrame[playIndex].movBrazoIzq) / i_max_steps; //caluclo del incremento dcon la variable diferente 
-	movBrazoDerInc = (KeyFrame[playIndex + 1].movBrazoDer - KeyFrame[playIndex].movBrazoDer) / i_max_steps;
-	movCabezaInc = (KeyFrame[playIndex + 1].movCabeza - KeyFrame[playIndex].movCabeza) / i_max_steps;
-}
-
+*/
 void animate(void) //Ciclo de animado
 {
-	if (play)
-	{
-		if (i_curr_steps >= i_max_steps) //end of animation between frames?
-		{
-			playIndex++;
-			if (playIndex > FrameIndex - 2)	//end of total animation?
-			{
-				std::cout << "Animation ended" << std::endl;
-				//printf("termina anim\n");
-				playIndex = 0;
-				play = false;
-			}
-			else //Next frame interpolations
-			{
-				i_curr_steps = 0; //Reset counter
-								  //Interpolation
-				interpolation();
+	//Animacion Drones
+	if (animaDrone) {
+
+		if (Drone1Reco1) {
+			movDrone1_x = -700.0f;
+			movDrone1_z -= 3.0f;
+			orientaDrone1 = 180.0f;
+			lightSpotlight1.x = -700.0f;
+			lightSpotlight1.z -= 3.0f;
+			if (movDrone1_z <= -400.0f) {
+				Drone1Reco1 = false;
+				Drone1Reco2 = true;
 			}
 		}
-		else
-		{
-			//Draw animation
-			posX += incX;
-			posY += incY;
-			posZ += incZ;
+		if (Drone1Reco2) {
+			movDrone1_x += (1.5f * 2.0f);
+			movDrone1_z -= (1.0f * 2.0f);
+			orientaDrone1 = 124.0f;
+			lightSpotlight1.x += (1.5f * 2.0f);
+			lightSpotlight1.z -= (1.0f * 2.0f);
+			if (movDrone1_z <= -600.0f) {
+				Drone1Reco2 = false;
+				Drone1Reco3 = true;
+			}
+		}
+		if (Drone1Reco3) {
+			movDrone1_x += 3.0f;
+			movDrone1_z = -600.0f;
+			orientaDrone1 = 90.0f;
+			lightSpotlight1.x += 3.0f;
+			lightSpotlight1.z = -600.0f;
+			if (movDrone1_x >= 600.0f) {
+				Drone1Reco3 = false;
+				Drone1Reco4 = true;
+			}
+		}
+		if (Drone1Reco4) {
+			movDrone1_x += (2.0f * 2.0f);
+			movDrone1_z += (1.0f * 2.0f);
+			orientaDrone1 = 45.0f;
+			lightSpotlight1.x += (2.0f * 2.0f);
+			lightSpotlight1.z += (1.0f * 2.0f);
+			if (movDrone1_x >= 1000.0f) {
+				Drone1Reco4 = false;
+				Drone1Reco5 = true;
+			}
+		}
+		if (Drone1Reco5) {
+			movDrone1_x = 1000.0f;
+			movDrone1_z += 3.0f;
+			orientaDrone1 = 0.0f;
+			lightSpotlight1.x = 1000.0f;
+			lightSpotlight1.z += 3.0f;
+			if (movDrone1_z >= 250.0f) {
+				Drone1Reco5 = false;
+				Drone1Reco6 = true;
+			}
+		}
+		if (Drone1Reco6) {
+			movDrone1_x -= (1.14f * 2.0f);
+			movDrone1_z += (1.0f * 2.0f);
+			orientaDrone1 = 312.0f;
+			lightSpotlight1.x -= (1.14f * 2.0f);
+			lightSpotlight1.z += (1.0f * 2.0f);
+			if (movDrone2_x <= 600.0f) {
+				Drone1Reco6 = false;
+				Drone1Reco7 = true;
+			}
+		}
+		if (Drone1Reco7) {
+			movDrone1_x -= 3.0f;
+			movDrone1_z = 600.0f;
+			orientaDrone1 = -90.0f;
+			lightSpotlight1.x -= 3.0f;
+			lightSpotlight1.z = 600.0f;
+			if (movDrone1_x <= -400.0f) {
+				Drone1Reco7 = false;
+				Drone1Reco8 = true;
+			}
+		}
+		if (Drone1Reco8) {
+			movDrone1_x -= (0.85f * 2.0f);
+			movDrone1_z -= (1.0f * 2.0f);
+			orientaDrone1 = 220.0f;
+			lightSpotlight1.x -= (0.85f * 2.0f);
+			lightSpotlight1.z -= (1.0f * 2.0f);
+			if (movDrone1_x <= -700.0f) {
+				Drone1Reco8 = false;
+				Drone1Reco1 = true;
+			}
+		}
 
-			rotRodIzq += rotInc;
-			rotRodDer += rotDerInc;
-			giroMonito += giroMonitoInc;
-			movBrazoIzq += movBrazoIzqInc; //asignar los valores a el mov del brazo
-			movBrazoDer += movBrazoDerInc;
-			movCabeza += movCabezaInc;
+	// Drone 2
 
+		if (Drone2Reco1) {
+			movDrone2_x = -700.0f;
+			movDrone2_z -= 3.0f;
+			orientaDrone2 = 180.0f;
+			lightSpotlight2.x = -700.0f;
+			lightSpotlight2.z -= 3.0f;
+			if (movDrone2_z <= -400.0f) {
+				Drone2Reco1 = false;
+				Drone2Reco2 = true;
+			}
+		}
+		if (Drone2Reco2) {
+			movDrone2_x += (1.5f * 2.0f);
+			movDrone2_z -= (1.0f * 2.0f);
+			orientaDrone2 = 124.0f;
+			lightSpotlight2.x += (1.5f * 2.0f);
+			lightSpotlight2.z -= (1.0f * 2.0f);
+			if (movDrone2_z <= -600.0f) {
+				Drone2Reco2 = false;
+				Drone2Reco3 = true;
+			}
+		}
+		if (Drone2Reco3) {
+			movDrone2_x += 3.0f;
+			movDrone2_z = -600.0f;
+			orientaDrone2 = 90.0f;
+			lightSpotlight2.x += 3.0f;
+			lightSpotlight2.z = -600.0f;
+			if (movDrone2_x >= 600.0f) {
+				Drone2Reco3 = false;
+				Drone2Reco4 = true;
+			}
+		}
+		if (Drone2Reco4) {
+			movDrone2_x += (2.0f * 2.0f);
+			movDrone2_z += (1.0f * 2.0f);
+			orientaDrone2 = 45.0f;
+			lightSpotlight2.x += (2.0f * 2.0f);
+			lightSpotlight2.z += (1.0f * 2.0f);
+			if (movDrone2_x >= 1000.0f) {
+				Drone2Reco4 = false;
+				Drone2Reco5 = true;
+			}
+		}
+		if (Drone2Reco5) {
+			movDrone2_x = 1000.0f;
+			movDrone2_z += 3.0f;
+			orientaDrone2 = 0.0f;
+			lightSpotlight2.x = 1000.0f;
+			lightSpotlight2.z += 3.0f;
+			if (movDrone2_z >= 250.0f) {
+				Drone2Reco5 = false;
+				Drone2Reco6 = true;
+			}
+		}
+		if (Drone2Reco6) {
+			movDrone2_x -= (1.14f * 2.0f);
+			movDrone2_z += (1.0f * 2.0f);
+			orientaDrone2 = 312.0f;
+			lightSpotlight2.x -= (1.14f * 2.0f);
+			lightSpotlight2.z += (1.0f * 2.0f);
+			if (movDrone2_x <= 600.0f) {
+				Drone2Reco6 = false;
+				Drone2Reco7 = true;
+			}
+		}
+		if (Drone2Reco7) {
+			movDrone2_x -= 3.0f;
+			movDrone2_z = 600.0f;
+			orientaDrone2 = -90.0f;
+			lightSpotlight2.x -= 3.0f;
+			lightSpotlight2.z = 600.0f;
+			if (movDrone2_x <= -400.0f) {
+				Drone2Reco7 = false;
+				Drone2Reco8 = true;
+			}
+		}
+		if (Drone2Reco8) {
+			movDrone2_x -= (0.85f * 2.0f);
+			movDrone2_z -= (1.0f * 2.0f);
+			orientaDrone2 = 220.0f;
+			lightSpotlight2.x -= (0.85f * 2.0f);
+			lightSpotlight2.z -= (1.0f * 2.0f);
+			if (movDrone2_x <= -700.0f) {
+				Drone2Reco8 = false;
+				Drone2Reco1 = true;
+			}
+		}
+	}
 
-			i_curr_steps++;
+	//Animacion T-REX
+	if (animaTREX == 0) {
+		rotTRex_y += 0.05;
+		rotTRex_x += 0.04;
+		if (rotTRex_y >= 8.0f) {
+			animaTREX = 1;
+		}
+	}
+	else {
+		rotTRex_y -= 0.05;
+		rotTRex_x -= 0.04;
+		if (rotTRex_y <= -8.0f) {
+			animaTREX = 0;
 		}
 	}
 
@@ -354,9 +546,6 @@ void animate(void) //Ciclo de animado
 			sol = 0.2f;
 			if (contNoche <= 1.0f) {
 
-				lightPosition.x = 300.0f * cos(miVariable);
-				lightPosition.z = 300.0f * sin(miVariable);
-				miVariable += 0.01f;
 				contNoche += 0.001f;
 
 				vigilanciaX = cX;
@@ -377,264 +566,277 @@ void animate(void) //Ciclo de animado
 		}
 	}
 
-	//ANIMACIONES B
+
 	//ANIMA-PTERODACTILO
 	if (animaPtero) {
 
-		//PTERODACTILO 1
-		if (Ptero1Reco1) {
-			movPtero1_x += (0.25f * 1.3f);
-			movPtero1_z += (1.0f * 1.3f);
-			orientaPtero1 = 14.03f;
-			if (movPtero1_z >= 100.0f) {
-				Ptero1Reco1 = false;
-				Ptero1Reco2 = true;
+		//AnimacionAlasPtero
+		if (animAlas == 0) {
+			alasPtero += 1.0f;
+			if (alasPtero >= 25) {
+				animAlas = 1;
 			}
 		}
-
-		if (Ptero1Reco2) {
-			movPtero1_x += 1.0f;
-			movPtero1_z = 100.0f;
-			orientaPtero1 = 90.0f;
-			if (movPtero1_x >= 75.0f) {
-				Ptero1Reco2 = false;
-				Ptero1Reco3 = true;
+		else {
+			alasPtero -= 1.0f;
+			if (alasPtero <= -25) {
+				animAlas = 0;
 			}
 		}
+			//PTERODACTILO 1
+			if (Ptero1Reco1) {
+				movPtero1_x += (0.25f * 1.3f);
+				movPtero1_z += (1.0f * 1.3f);
+				orientaPtero1 = 14.03f;
+				if (movPtero1_z >= 100.0f) {
+					Ptero1Reco1 = false;
+					Ptero1Reco2 = true;
+				}
+			}
 
-		if (Ptero1Reco3) {
-			movPtero1_x += (0.25f * 1.3f);
-			movPtero1_z -= (1.0f * 1.3f);
-			orientaPtero1 = 165.97f;
-			if (movPtero1_z <= 0.0f) {
-				Ptero1Reco3 = false;
-				Ptero1Reco4 = true;
+			if (Ptero1Reco2) {
+				movPtero1_x += 1.0f;
+				movPtero1_z = 100.0f;
+				orientaPtero1 = 90.0f;
+				if (movPtero1_x >= 75.0f) {
+					Ptero1Reco2 = false;
+					Ptero1Reco3 = true;
+				}
+			}
+
+			if (Ptero1Reco3) {
+				movPtero1_x += (0.25f * 1.3f);
+				movPtero1_z -= (1.0f * 1.3f);
+				orientaPtero1 = 165.97f;
+				if (movPtero1_z <= 0.0f) {
+					Ptero1Reco3 = false;
+					Ptero1Reco4 = true;
+				}
+			}
+
+			if (Ptero1Reco4) {
+				movPtero1_x -= (0.25f * 1.3f);
+				movPtero1_z -= (1.0f * 1.3f);
+				orientaPtero1 = 194.03f;
+				if (movPtero1_x <= 75.0f) {
+					Ptero1Reco4 = false;
+					Ptero1Reco5 = true;
+				}
+			}
+
+			if (Ptero1Reco5) {
+				movPtero1_x -= 1.0f;
+				movPtero1_z = -100.0f;
+				orientaPtero1 = 270.0f;
+				if (movPtero1_x <= -75.0f) {
+					Ptero1Reco5 = false;
+					Ptero1Reco6 = true;
+				}
+			}
+
+			if (Ptero1Reco6) {
+				movPtero1_x -= (0.25f * 1.3f);
+				movPtero1_z += (1.0f * 1.3f);
+				orientaPtero1 = 345.97f;
+				if (movPtero1_x <= -100.0f) {
+					Ptero1Reco6 = false;
+					Ptero1Reco1 = true;
+				}
+			}
+			//---------------------------------------------------------
+					//PTERODACTILO 2
+			if (Ptero2Reco1) {
+				movPtero2_x += (0.25f * 1.3f);
+				movPtero2_z += (1.0f * 1.3f);
+				orientaPtero2 = 14.03f;
+				if (movPtero2_z >= 100.0f) {
+					Ptero2Reco1 = false;
+					Ptero2Reco2 = true;
+				}
+			}
+
+			if (Ptero2Reco2) {
+				movPtero2_x += 1.0f;
+				movPtero2_z = 100.0f;
+				orientaPtero2 = 90.0f;
+				if (movPtero2_x >= 75.0f) {
+					Ptero2Reco2 = false;
+					Ptero2Reco3 = true;
+				}
+			}
+
+			if (Ptero2Reco3) {
+				movPtero2_x += (0.25f * 1.3f);
+				movPtero2_z -= (1.0f * 1.3f);
+				orientaPtero2 = 165.97f;
+				if (movPtero2_z <= 0.0f) {
+					Ptero2Reco3 = false;
+					Ptero2Reco4 = true;
+				}
+			}
+
+			if (Ptero2Reco4) {
+				movPtero2_x -= (0.25f * 1.3f);
+				movPtero2_z -= (1.0f * 1.3f);
+				orientaPtero2 = 194.03f;
+				if (movPtero2_x <= 75.0f) {
+					Ptero2Reco4 = false;
+					Ptero2Reco5 = true;
+				}
+			}
+
+			if (Ptero2Reco5) {
+				movPtero2_x -= 1.0f;
+				movPtero2_z = -100.0f;
+				orientaPtero2 = 270.0f;
+				if (movPtero2_x <= -75.0f) {
+					Ptero2Reco5 = false;
+					Ptero2Reco6 = true;
+				}
+			}
+
+			if (Ptero2Reco6) {
+				movPtero2_x -= (0.25f * 1.3f);
+				movPtero2_z += (1.0f * 1.3f);
+				orientaPtero2 = 345.97f;
+				if (movPtero2_x <= -100.0f) {
+					Ptero2Reco6 = false;
+					Ptero2Reco1 = true;
+				}
+			}
+
+			//---------------------------------------------------------
+				//PTERODACTILO 3
+
+			if (Ptero3Reco1) {
+				movPtero3_x += (0.25f * 1.3f);
+				movPtero3_z += (1.0f * 1.3f);
+				orientaPtero3 = 14.03f;
+				if (movPtero3_z >= 100.0f) {
+					Ptero3Reco1 = false;
+					Ptero3Reco2 = true;
+				}
+			}
+
+			if (Ptero3Reco2) {
+				movPtero3_x += 1.0f;
+				movPtero3_z = 100.0f;
+				orientaPtero3 = 90.0f;
+				if (movPtero3_x >= 75.0f) {
+					Ptero3Reco2 = false;
+					Ptero3Reco3 = true;
+				}
+			}
+
+			if (Ptero3Reco3) {
+				movPtero3_x += (0.25f * 1.3f);
+				movPtero3_z -= (1.0f * 1.3f);
+				orientaPtero3 = 165.97f;
+				if (movPtero3_z <= 0.0f) {
+					Ptero3Reco3 = false;
+					Ptero3Reco4 = true;
+				}
+			}
+
+			if (Ptero3Reco4) {
+				movPtero3_x -= (0.25f * 1.3f);
+				movPtero3_z -= (1.0f * 1.3f);
+				orientaPtero3 = 194.03f;
+				if (movPtero3_x <= 75.0f) {
+					Ptero3Reco4 = false;
+					Ptero3Reco5 = true;
+				}
+			}
+
+			if (Ptero3Reco5) {
+				movPtero3_x -= 1.0f;
+				movPtero3_z = -100.0f;
+				orientaPtero3 = 270.0f;
+				if (movPtero3_x <= -75.0f) {
+					Ptero3Reco5 = false;
+					Ptero3Reco6 = true;
+				}
+			}
+
+			if (Ptero3Reco6) {
+				movPtero3_x -= (0.25f * 1.3f);
+				movPtero3_z += (1.0f * 1.3f);
+				orientaPtero3 = 345.97f;
+				if (movPtero3_x <= -100.0f) {
+					Ptero3Reco6 = false;
+					Ptero3Reco1 = true;
+				}
+			}
+
+			//---------------------------------------------------------
+				//PTERODACTILO 4
+
+			if (Ptero4Reco1) {
+				movPtero4_x += (0.25f * 1.3f);
+				movPtero4_z += (1.0f * 1.3f);
+				orientaPtero4 = 14.03f;
+				if (movPtero4_z >= 100.0f) {
+					Ptero4Reco1 = false;
+					Ptero4Reco2 = true;
+				}
+			}
+
+			if (Ptero4Reco2) {
+				movPtero4_x += 1.0f;
+				movPtero4_z = 100.0f;
+				orientaPtero4 = 90.0f;
+				if (movPtero4_x >= 75.0f) {
+					Ptero4Reco2 = false;
+					Ptero4Reco3 = true;
+				}
+			}
+
+			if (Ptero4Reco3) {
+				movPtero4_x += (0.25f * 1.3f);
+				movPtero4_z -= (1.0f * 1.3f);
+				orientaPtero4 = 165.97f;
+				if (movPtero4_z <= 0.0f) {
+					Ptero4Reco3 = false;
+					Ptero4Reco4 = true;
+				}
+			}
+
+			if (Ptero4Reco4) {
+				movPtero4_x -= (0.25f * 1.3f);
+				movPtero4_z -= (1.0f * 1.3f);
+				orientaPtero4 = 194.03f;
+				if (movPtero4_x <= 75.0f) {
+					Ptero4Reco4 = false;
+					Ptero4Reco5 = true;
+				}
+			}
+
+			if (Ptero4Reco5) {
+				movPtero4_x -= 1.0f;
+				movPtero4_z = -100.0f;
+				orientaPtero4 = 270.0f;
+				if (movPtero4_x <= -75.0f) {
+					Ptero4Reco5 = false;
+					Ptero4Reco6 = true;
+				}
+			}
+
+			if (Ptero4Reco6) {
+				movPtero4_x -= (0.25f * 1.3f);
+				movPtero4_z += (1.0f * 1.3f);
+				orientaPtero4 = 345.97f;
+				if (movPtero4_x <= -100.0f) {
+					Ptero4Reco6 = false;
+					Ptero4Reco1 = true;
+				}
 			}
 		}
-
-		if (Ptero1Reco4) {
-			movPtero1_x -= (0.25f * 1.3f);
-			movPtero1_z -= (1.0f * 1.3f);
-			orientaPtero1 = 194.03f;
-			if (movPtero1_x <= 75.0f) {
-				Ptero1Reco4 = false;
-				Ptero1Reco5 = true;
-			}
-		}
-
-		if (Ptero1Reco5) {
-			movPtero1_x -= 1.0f;
-			movPtero1_z = -100.0f;
-			orientaPtero1 = 270.0f;
-			if (movPtero1_x <= -75.0f) {
-				Ptero1Reco5 = false;
-				Ptero1Reco6 = true;
-			}
-		}
-
-		if (Ptero1Reco6) {
-			movPtero1_x -= (0.25f * 1.3f);
-			movPtero1_z += (1.0f * 1.3f);
-			orientaPtero1 = 345.97f;
-			if (movPtero1_x <= -100.0f) {
-				Ptero1Reco6 = false;
-				Ptero1Reco1 = true;
-			}
-		}
-		//---------------------------------------------------------
-				//PTERODACTILO 2
-		if (Ptero2Reco1) {
-			movPtero2_x += (0.25f * 1.3f);
-			movPtero2_z += (1.0f * 1.3f);
-			orientaPtero2 = 14.03f;
-			if (movPtero2_z >= 100.0f) {
-				Ptero2Reco1 = false;
-				Ptero2Reco2 = true;
-			}
-		}
-
-		if (Ptero2Reco2) {
-			movPtero2_x += 1.0f;
-			movPtero2_z = 100.0f;
-			orientaPtero2 = 90.0f;
-			if (movPtero2_x >= 75.0f) {
-				Ptero2Reco2 = false;
-				Ptero2Reco3 = true;
-			}
-		}
-
-		if (Ptero2Reco3) {
-			movPtero2_x += (0.25f * 1.3f);
-			movPtero2_z -= (1.0f * 1.3f);
-			orientaPtero2 = 165.97f;
-			if (movPtero2_z <= 0.0f) {
-				Ptero2Reco3 = false;
-				Ptero2Reco4 = true;
-			}
-		}
-
-		if (Ptero2Reco4) {
-			movPtero2_x -= (0.25f * 1.3f);
-			movPtero2_z -= (1.0f * 1.3f);
-			orientaPtero2 = 194.03f;
-			if (movPtero2_x <= 75.0f) {
-				Ptero2Reco4 = false;
-				Ptero2Reco5 = true;
-			}
-		}
-
-		if (Ptero2Reco5) {
-			movPtero2_x -= 1.0f;
-			movPtero2_z = -100.0f;
-			orientaPtero2 = 270.0f;
-			if (movPtero2_x <= -75.0f) {
-				Ptero2Reco5 = false;
-				Ptero2Reco6 = true;
-			}
-		}
-
-		if (Ptero2Reco6) {
-			movPtero2_x -= (0.25f * 1.3f);
-			movPtero2_z += (1.0f * 1.3f);
-			orientaPtero2 = 345.97f;
-			if (movPtero2_x <= -100.0f) {
-				Ptero2Reco6 = false;
-				Ptero2Reco1 = true;
-			}
-		}
-
-		//---------------------------------------------------------
-			//PTERODACTILO 3
-
-		if (Ptero3Reco1) {
-			movPtero3_x += (0.25f * 1.3f);
-			movPtero3_z += (1.0f * 1.3f);
-			orientaPtero3 = 14.03f;
-			if (movPtero3_z >= 100.0f) {
-				Ptero3Reco1 = false;
-				Ptero3Reco2 = true;
-			}
-		}
-
-		if (Ptero3Reco2) {
-			movPtero3_x += 1.0f;
-			movPtero3_z = 100.0f;
-			orientaPtero3 = 90.0f;
-			if (movPtero3_x >= 75.0f) {
-				Ptero3Reco2 = false;
-				Ptero3Reco3 = true;
-			}
-		}
-
-		if (Ptero3Reco3) {
-			movPtero3_x += (0.25f * 1.3f);
-			movPtero3_z -= (1.0f * 1.3f);
-			orientaPtero3 = 165.97f;
-			if (movPtero3_z <= 0.0f) {
-				Ptero3Reco3 = false;
-				Ptero3Reco4 = true;
-			}
-		}
-
-		if (Ptero3Reco4) {
-			movPtero3_x -= (0.25f * 1.3f);
-			movPtero3_z -= (1.0f * 1.3f);
-			orientaPtero3 = 194.03f;
-			if (movPtero3_x <= 75.0f) {
-				Ptero3Reco4 = false;
-				Ptero3Reco5 = true;
-			}
-		}
-
-		if (Ptero3Reco5) {
-			movPtero3_x -= 1.0f;
-			movPtero3_z = -100.0f;
-			orientaPtero3 = 270.0f;
-			if (movPtero3_x <= -75.0f) {
-				Ptero3Reco5 = false;
-				Ptero3Reco6 = true;
-			}
-		}
-
-		if (Ptero3Reco6) {
-			movPtero3_x -= (0.25f * 1.3f);
-			movPtero3_z += (1.0f * 1.3f);
-			orientaPtero3 = 345.97f;
-			if (movPtero3_x <= -100.0f) {
-				Ptero3Reco6 = false;
-				Ptero3Reco1 = true;
-			}
-		}
-
-		//---------------------------------------------------------
-			//PTERODACTILO 4
-
-		if (Ptero4Reco1) {
-			movPtero4_x += (0.25f * 1.3f);
-			movPtero4_z += (1.0f * 1.3f);
-			orientaPtero4 = 14.03f;
-			if (movPtero4_z >= 100.0f) {
-				Ptero4Reco1 = false;
-				Ptero4Reco2 = true;
-			}
-		}
-
-		if (Ptero4Reco2) {
-			movPtero4_x += 1.0f;
-			movPtero4_z = 100.0f;
-			orientaPtero4 = 90.0f;
-			if (movPtero4_x >= 75.0f) {
-				Ptero4Reco2 = false;
-				Ptero4Reco3 = true;
-			}
-		}
-
-		if (Ptero4Reco3) {
-			movPtero4_x += (0.25f * 1.3f);
-			movPtero4_z -= (1.0f * 1.3f);
-			orientaPtero4 = 165.97f;
-			if (movPtero4_z <= 0.0f) {
-				Ptero4Reco3 = false;
-				Ptero4Reco4 = true;
-			}
-		}
-
-		if (Ptero4Reco4) {
-			movPtero4_x -= (0.25f * 1.3f);
-			movPtero4_z -= (1.0f * 1.3f);
-			orientaPtero4 = 194.03f;
-			if (movPtero4_x <= 75.0f) {
-				Ptero4Reco4 = false;
-				Ptero4Reco5 = true;
-			}
-		}
-
-		if (Ptero4Reco5) {
-			movPtero4_x -= 1.0f;
-			movPtero4_z = -100.0f;
-			orientaPtero4 = 270.0f;
-			if (movPtero4_x <= -75.0f) {
-				Ptero4Reco5 = false;
-				Ptero4Reco6 = true;
-			}
-		}
-
-		if (Ptero4Reco6) {
-			movPtero4_x -= (0.25f * 1.3f);
-			movPtero4_z += (1.0f * 1.3f);
-			orientaPtero4 = 345.97f;
-			if (movPtero4_x <= -100.0f) {
-				Ptero4Reco6 = false;
-				Ptero4Reco1 = true;
-			}
-		}
-	}
 
 		//ANIMACION HUEVO
 
 		if (animaHuevo) {
 			B = 1;
-			if (B == 1) {
+			if (B >= 0.5) {
 				movHuevoX += 0.5;
 			}
 		}
@@ -762,7 +964,7 @@ void animate(void) //Ciclo de animado
 					GEsferaStop += 0.07f;
 
 					if (GEsferaStop >= 2.0f) {
- 						GEsferaStop = 0.0f;
+						GEsferaStop = 0.0f;
 						GEsferaReco7 = false;
 						GEsferaReco8 = true;
 					}
@@ -817,7 +1019,7 @@ int main()
 	monitors = glfwGetPrimaryMonitor();
 	getResolution();
 
-	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "CGeIHC", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Parque_Jurasico", NULL, NULL);
 	if (window == NULL)
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
@@ -841,6 +1043,8 @@ int main()
 		std::cout << "Failed to initialize GLAD" << std::endl;
 		return -1;
 	}
+
+//	loadAudio();
 
 	// configure global opengl state
 	// -----------------------------
@@ -875,8 +1079,12 @@ int main()
 	
 	Model helecho("resources/objects/helecho/hel.obj");
 	Model fPlant("resources/objects/frgplant/frgp.obj");
-	Model tRex("resources/objects/trex/rex.obj");
-	Model cabezarex("resources/objects/cabeza/cabezatrex.obj");
+
+	Model cabezarex("resources/objects/cabeza/cabezatrex2.obj");
+	Model REX_ojoIzq("resources/objects/cabeza/ojoIzq.obj");
+	Model REX_ojoDer("resources/objects/cabeza/ojoDer.obj");
+	Model REX_lengua("resources/objects/cabeza/Lengua.obj");
+
 	Model escultrex("resources/objects/esc/escult.obj");
 	Model huevo1("resources/objects/huevo1/egg.obj");
 	Model huevo2("resources/objects/huevo2/egg2.obj");
@@ -887,10 +1095,6 @@ int main()
 	Model camino("resources/objects/camino/rwk.obj");
 	Model puerta("resources/objects/puerta/puerta1.obj");
 	Model restroom("resources/objects/restroom/rest.obj");
-	Model arbol1("resources/objects/arbol1/ab1.obj");
-	Model arbol2("resources/objects/arbol2/ab2.obj");
-	Model roca1("resources/objects/roca1/rc1.obj");
-	Model roca2("resources/objects/roca2/rc2.obj");
 
 	Model riel1("resources/objects/riel1/r1.obj");
 	Model riel2("resources/objects/riel2/r2.obj");
@@ -906,23 +1110,30 @@ int main()
 	Model plant1("resources/objects/plant1/pl1.obj");
 	Model plant2("resources/objects/plants2/pl2.obj");
 	Model plant3("resources/objects/plants3/pl3.obj");
-	//Model plant4("resources/objects/plants4/pl5.obj");
 
 
-	//MODELOS B
+	Model Dron("resources/objects/Drone/Drone3.obj");
+	
 	Model Cupula("resources/objects/Cupula/Cupula4.obj");
 
-	Model Dino2("resources/objects/Dino2/ptero.obj");
-	Model Dino2_2("resources/objects/Dino2/ptero.obj");
-	Model Dino2_3("resources/objects/Dino2/ptero.obj");
-	Model Dino2_4("resources/objects/Dino2/ptero.obj");
+	Model EdnaCabeza("resources/objects/Edna_Moda/CabezaEdna.obj");
+	Model EdnaCuerpo("resources/objects/Edna_Moda/CuerpoEdna.obj");
+	Model EdnaBrazIzq("resources/objects/Edna_Moda/BrazoIzq.obj");
+	Model EdnaBrazDer("resources/objects/Edna_Moda/BrazoDer.obj");
+	Model EdnaPierIzq("resources/objects/Edna_Moda/PiernaIzq.obj");
+	Model EdnaPierDer("resources/objects/Edna_Moda/PiernaDer.obj");
+
+
+	Model Ptero("resources/objects/Dino2/CuerpoPtero.obj");
+	Model AlaIzq("resources/objects/Dino2/AlaIzq.obj");
+	Model AlaDer("resources/objects/Dino2/AlaDer.obj");
+
+	Model Dino3("resources/objects/Dino3/Dino3.obj");
+
+
 
 	Model GiroEsfera("resources/objects/GiroEsfera/GiroEsfera.obj");
 	//FIN MODELOS B
-
-
-
-
 
 	//MODEL MIXAMO 
 	ModelAnim persona1("resources/objects/persona1/Talking.dae");
@@ -939,19 +1150,11 @@ int main()
 	ModelAnim ninja("resources/objects/ZombieWalk/ZombieWalk.dae");
 	ninja.initShaders(animShader.ID);*/
 
-	//Inicialización de KeyFrames
-	for (int i = 0; i < MAX_FRAMES; i++)
-	{
-		KeyFrame[i].posX = 0;
-		KeyFrame[i].posY = 0;
-		KeyFrame[i].posZ = 0;
-		KeyFrame[i].rotRodIzq = 0;
-		KeyFrame[i].giroMonito = 0;
-		KeyFrame[i].movCabeza = 0;
-	}
-
 	// draw in wireframe
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+//	alSourcePlay(sources[0]);
+//	alSourcePlay(sources[1]);
 
 	// render loop
 	// -----------
@@ -982,29 +1185,49 @@ int main()
 		staticShader.setVec3("dirLight.diffuse", glm::vec3(0.0f, 0.0f, 0.0f));
 		staticShader.setVec3("dirLight.specular", glm::vec3(0.0f, 0.0f, 0.0f));
 
-		staticShader.setVec3("pointLight[0].position", lightPosition);
+		staticShader.setVec3("pointLight[0].position", lightSpotlight1);
+		staticShader.setVec3("pointLight[0].direction", lightSpotlight1);
 		staticShader.setVec3("pointLight[0].ambient", glm::vec3(vigilanciaX, vigilanciaY, vigilanciaZ));
 		staticShader.setVec3("pointLight[0].diffuse", glm::vec3(vigilanciaX, vigilanciaY, vigilanciaZ));
 		staticShader.setVec3("pointLight[0].specular", glm::vec3(0.0f, 0.0f, 0.0f));
 		staticShader.setFloat("pointLight[0].constant", 0.0000008f);
 		staticShader.setFloat("pointLight[0].linear", 0.0000009f);
 		staticShader.setFloat("pointLight[0].quadratic", 0.00032f);
+		staticShader.setFloat("pointLight[0].cutOff", glm::cos(glm::radians(15.0f)));
 
-		staticShader.setVec3("pointLight[1].position", lightPosition2);//
-		staticShader.setVec3("pointLight[1].ambient", glm::vec3(luzX, luzY, luzZ));
-		staticShader.setVec3("pointLight[1].diffuse", glm::vec3(luzX, luzY, luzZ));
+		staticShader.setVec3("pointLight[1].position", lightSpotlight2);
+		staticShader.setVec3("pointLight[1].direction", lightSpotlight2);
+		staticShader.setVec3("pointLight[1].ambient", glm::vec3(vigilanciaX, vigilanciaY, vigilanciaZ));
+		staticShader.setVec3("pointLight[1].diffuse", glm::vec3(vigilanciaX, vigilanciaY, vigilanciaZ));
 		staticShader.setVec3("pointLight[1].specular", glm::vec3(0.0f, 0.0f, 0.0f));
-		staticShader.setFloat("pointLight[1].constant", 0.008f);
-		staticShader.setFloat("pointLight[1].linear", 0.009f);
-		staticShader.setFloat("pointLight[1].quadratic", 0.0000022f);
+		staticShader.setFloat("pointLight[1].constant", 0.0000008f);
+		staticShader.setFloat("pointLight[1].linear", 0.0000009f);
+		staticShader.setFloat("pointLight[1].quadratic", 0.00032f);
+		staticShader.setFloat("pointLight[1].cutOff", glm::cos(glm::radians(15.0f)));
 
-		staticShader.setVec3("pointLight[2].position", lightPosition3);//
+		staticShader.setVec3("pointLight[2].position", lightPosition2);//
 		staticShader.setVec3("pointLight[2].ambient", glm::vec3(luzX, luzY, luzZ));
 		staticShader.setVec3("pointLight[2].diffuse", glm::vec3(luzX, luzY, luzZ));
 		staticShader.setVec3("pointLight[2].specular", glm::vec3(0.0f, 0.0f, 0.0f));
 		staticShader.setFloat("pointLight[2].constant", 0.008f);
 		staticShader.setFloat("pointLight[2].linear", 0.009f);
 		staticShader.setFloat("pointLight[2].quadratic", 0.0000022f);
+
+		staticShader.setVec3("pointLight[3].position", lightPosition3);//
+		staticShader.setVec3("pointLight[3].ambient", glm::vec3(luzX, luzY, luzZ));
+		staticShader.setVec3("pointLight[3].diffuse", glm::vec3(luzX, luzY, luzZ));
+		staticShader.setVec3("pointLight[3].specular", glm::vec3(0.0f, 0.0f, 0.0f));
+		staticShader.setFloat("pointLight[3].constant", 0.008f);
+		staticShader.setFloat("pointLight[3].linear", 0.009f);
+		staticShader.setFloat("pointLight[3].quadratic", 0.0000022f);
+
+		staticShader.setVec3("pointLight[4].position", lightPosition4);//
+		staticShader.setVec3("pointLight[4].ambient", glm::vec3(luzX, luzY, luzZ));
+		staticShader.setVec3("pointLight[4].diffuse", glm::vec3(luzX, luzY, luzZ));
+		staticShader.setVec3("pointLight[4].specular", glm::vec3(0.0f, 0.0f, 0.0f));
+		staticShader.setFloat("pointLight[4].constant", 0.008f);
+		staticShader.setFloat("pointLight[4].linear", 0.009f);
+		staticShader.setFloat("pointLight[4].quadratic", 0.0000022f);
 
 		staticShader.setFloat("material_shininess", 32.0f);
 
@@ -1058,7 +1281,6 @@ int main()
 		persona2.Draw(animShader);
 
 
-
 		// -------------------------------------------------------------------------------------------------------------------------
 		// Escenario
 		// -------------------------------------------------------------------------------------------------------------------------
@@ -1082,12 +1304,22 @@ int main()
 		staticShader.setMat4("model", model);
 		fPlant.Draw(staticShader);
 
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(1300.0f, 0.0f, -300.0f));
+		model = glm::scale(model, glm::vec3(4.0f));
+		staticShader.setMat4("model", model);
+		fPlant.Draw(staticShader);
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(1300.0f, 0.0f, 300.0f));
+		model = glm::scale(model, glm::vec3(4.0f));
+		staticShader.setMat4("model", model);
+		fPlant.Draw(staticShader);
+
 		model = glm::translate(glm::mat4(1.0f), glm::vec3(400.0f, 0.0f, -1000.0f));
 		model = glm::scale(model, glm::vec3(4.0f));
 		staticShader.setMat4("model", model);
 		fPlant.Draw(staticShader);
 
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(-280.0f, 0.0f, -1000.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-400.0f, 0.0f, -1000.0f));
 		model = glm::scale(model, glm::vec3(4.0f));
 		staticShader.setMat4("model", model);
 		fPlant.Draw(staticShader);
@@ -1102,22 +1334,52 @@ int main()
 		staticShader.setMat4("model", model);
 		fPlant.Draw(staticShader);
 
-	
 
-		/*
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -1100.0f));
-		model = glm::scale(model, glm::vec3(1.0f));
+		//DRON 1
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(movDrone1_x, 500.0f, movDrone1_z));
+		model = glm::rotate(model, glm::radians(orientaDrone1), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.2f));
 		staticShader.setMat4("model", model);
-		tRex.Draw(staticShader);
-		*/
+		Dron.Draw(staticShader);
+
+		//DRON 2
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(movDrone2_x, 500.0f, movDrone2_z));
+		model = glm::rotate(model, glm::radians(orientaDrone2), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.2f));
+		staticShader.setMat4("model", model);
+		Dron.Draw(staticShader);
+
 		//Cabeza REX
 		
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -450.0f, -1500.0f));
-		model = glm::scale(model, glm::vec3(3.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -20.0f, -1200.0f));
+		model = glm::rotate(model, glm::radians(rotTRex_y), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(5.0f));
 		staticShader.setMat4("model", model);
 		cabezarex.Draw(staticShader);
-		
+		 
+		// ojo izq
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-2.0f, -20.0f, -1200.0f));
+		model = glm::rotate(model, glm::radians(rotTRex_y), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(5.0f));
+		staticShader.setMat4("model", model);
+		REX_ojoIzq.Draw(staticShader);
 
+		// ojo der
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(2.0f, -20.0f, -1200.0f));
+		model = glm::rotate(model, glm::radians(rotTRex_y), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(5.0f));
+		staticShader.setMat4("model", model);
+		REX_ojoDer.Draw(staticShader);
+		
+		// lengua
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -20.0f, -1200.0f));
+		model = glm::rotate(model, glm::radians(rotTRex_y), glm::vec3(0.0f, 1.0f, 0.0f));
+		tmp = model = glm::rotate(model, glm::radians(-rotTRex_x), glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(5.0f));
+		staticShader.setMat4("model", model);
+		REX_lengua.Draw(staticShader);
+//---------------------
+// 
 		//Escultura
 		model = glm::translate(glm::mat4(1.0f), glm::vec3(-450.0f, -150.0f, 200.0f));
 		model = glm::scale(model, glm::vec3(1.0f));
@@ -1138,48 +1400,47 @@ int main()
 		//huevo1
 		model = glm::translate(glm::mat4(1.0f), glm::vec3(1150.0f, 10.0f, -790.0f));
 		tmp = model = glm::rotate(model, glm::radians(movHuevoX), glm::vec3(0.0f, 0.0f, 1.0f));
-		model = glm::scale(model, glm::vec3(10.0f));
+		model = glm::scale(model, glm::vec3(30.0f));
 		staticShader.setMat4("model", model);
 		huevo1.Draw(staticShader);
 
 		//huevo2
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(1070.0f, 5.0f, -850.0f));
-		model = glm::scale(model, glm::vec3(8.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(1070.0f, 25.0f, -850.0f));
+		model = glm::scale(model, glm::vec3(28.0f));
 		staticShader.setMat4("model", model);
 		huevo2.Draw(staticShader);
 
 		//huevo3
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(1090.0f, 10.0f, -890.0f));
-		model = glm::scale(model, glm::vec3(15.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(1090.0f, 30.0f, -890.0f));
+		model = glm::scale(model, glm::vec3(35.0f));
 		staticShader.setMat4("model", model);
 		huevo3.Draw(staticShader);
 
 		//huevo4
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(1020.0f, 5.0f, -750.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(1020.0f, 25.0f, -750.0f));
 		model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 10.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(20.0f));
-		staticShader.setMat4("model", model);
-		huevo1.Draw(staticShader);
-
-		//huevo5
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(900.0f, 5.0f, -750.0f));
-		model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 10.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(20.0f));
-		staticShader.setMat4("model", model);
-		huevo1.Draw(staticShader);
-
-		//huevo6
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(840.0f, 15.0f, -890.0f));
-		model = glm::scale(model, glm::vec3(25.0f));
-		staticShader.setMat4("model", model);
-		huevo3.Draw(staticShader);
-
-		//huevo7
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(1000.0f, 15.0f, -700.0f));
 		model = glm::scale(model, glm::vec3(40.0f));
 		staticShader.setMat4("model", model);
 		huevo1.Draw(staticShader);
 
+		//huevo5
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(900.0f, 25.0f, -750.0f));
+		model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 10.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(40.0f));
+		staticShader.setMat4("model", model);
+		huevo1.Draw(staticShader);
+
+		//huevo6
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(840.0f, 35.0f, -890.0f));
+		model = glm::scale(model, glm::vec3(45.0f));
+		staticShader.setMat4("model", model);
+		huevo3.Draw(staticShader);
+
+		//huevo7
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(1000.0f, 35.0f, -700.0f));
+		model = glm::scale(model, glm::vec3(60.0f));
+		staticShader.setMat4("model", model);
+		huevo1.Draw(staticShader);
 
 		//plantas
 
@@ -1206,77 +1467,6 @@ int main()
 		staticShader.setMat4("model", model);
 		helecho.Draw(staticShader);
 
-		//ARBOLES
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(-750.0f, 0.0f, -205.0f));
-		model = glm::scale(model, glm::vec3(0.2f));
-		staticShader.setMat4("model", model);
-		arbol1.Draw(staticShader);
-
-
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(-850.0f, 0.0f, -605.0f));
-		model = glm::scale(model, glm::vec3(0.2f));
-		staticShader.setMat4("model", model);
-		arbol1.Draw(staticShader);
-
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(500.0f, 0.0f, 505.0f));
-		model = glm::scale(model, glm::vec3(0.2f));
-		staticShader.setMat4("model", model);
-		arbol1.Draw(staticShader);
-
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(850.0f, 0.0f, -205.0f));
-		model = glm::scale(model, glm::vec3(0.2f));
-		staticShader.setMat4("model", model);
-		arbol1.Draw(staticShader);
-
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(550.0f, 0.0f, 1005.0f));
-		model = glm::scale(model, glm::vec3(100.0f));
-		staticShader.setMat4("model", model);
-		arbol2.Draw(staticShader);
-
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(-500.0f, 0.0f, 705.0f));
-		model = glm::scale(model, glm::vec3(100.0f));
-		staticShader.setMat4("model", model);
-		arbol2.Draw(staticShader);
-
-
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(500.0f, 0.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(100.0f));
-		staticShader.setMat4("model", model);
-		arbol2.Draw(staticShader);
-
-		//ROCAS
-
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(-600.0f, 0.0f, 100.0f));
-		model = glm::scale(model, glm::vec3(4.0f));
-		staticShader.setMat4("model", model);
-		roca1.Draw(staticShader);
-
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(-490.0f, 0.0f, 600.0f));
-		model = glm::scale(model, glm::vec3(1.0f));
-		staticShader.setMat4("model", model);
-		roca2.Draw(staticShader);
-
-
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(500.0f, 0.0f, -50.0f));
-		model = glm::scale(model, glm::vec3(3.0f));
-		staticShader.setMat4("model", model);
-		roca1.Draw(staticShader);
-
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(690.0f, 0.0f, 50.0f));
-		model = glm::scale(model, glm::vec3(0.5f));
-		staticShader.setMat4("model", model);
-		roca2.Draw(staticShader);
-
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(890.0f, 0.0f, 50.0f));
-		model = glm::scale(model, glm::vec3(0.5f));
-		staticShader.setMat4("model", model);
-		roca2.Draw(staticShader);
-
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(790.0f, 0.0f, -150.0f));
-		model = glm::scale(model, glm::vec3(0.5f));
-		staticShader.setMat4("model", model);
-		roca1.Draw(staticShader);
-		
 
 		//banca
 		model = glm::translate(glm::mat4(1.0f), glm::vec3(600.0f, 35.0f, 800.0f));
@@ -1286,50 +1476,30 @@ int main()
 		banc.Draw(staticShader);
 
 
-
 		//Camino
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 150.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(1100.0f, 0.0f, -300.0f));
 		model = glm::scale(model, glm::vec3(4.0f));
 		staticShader.setMat4("model", model);
 		camino.Draw(staticShader);
 		
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(150.0f, 0.0f, 0.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(1100.0f, 0.0f, -150.0f));
 		model = glm::scale(model, glm::vec3(4.0f));
 		staticShader.setMat4("model", model);
 		camino.Draw(staticShader);
 
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(150.0f, 0.0f, 150.0f));
-		model = glm::scale(model, glm::vec3(4.0f));
-		staticShader.setMat4("model", model);
-		camino.Draw(staticShader);
-
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(150.0f, 0.0f, -150.0f));
-		model = glm::scale(model, glm::vec3(4.0f));
-		staticShader.setMat4("model", model);
-		camino.Draw(staticShader);
-
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(-150.0f, 0.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(4.0f));
-		staticShader.setMat4("model", model);
-		camino.Draw(staticShader);
-
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(-150.0f, 0.0f, -150.0f));
-		model = glm::scale(model, glm::vec3(4.0f));
-		staticShader.setMat4("model", model);
-		camino.Draw(staticShader);
-
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(-150.0f, 0.0f, 150.0f));
-		model = glm::scale(model, glm::vec3(4.0f));
-		staticShader.setMat4("model", model);
-		camino.Draw(staticShader);
-
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -300.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(1100.0f, 0.0f, -0.0f));
 		model = glm::scale(model, glm::vec3(4.0f));
 		staticShader.setMat4("model", model);
 		camino.Draw(staticShader);
 
 
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 150.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(1100.0f, 0.0f, 150.0f));
+		model = glm::scale(model, glm::vec3(4.0f));
+		staticShader.setMat4("model", model);
+		camino.Draw(staticShader);
+
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(1100.0f, 0.0f, 300.0f));
 		model = glm::scale(model, glm::vec3(4.0f));
 		staticShader.setMat4("model", model);
 		camino.Draw(staticShader);
@@ -1407,7 +1577,7 @@ int main()
 		riel1.Draw(staticShader);
 
 		//riel rex
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -750.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -650.0f));
 		model = glm::rotate(model, glm::radians(-180.0f), glm::vec3(0.0f, 10.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(1.0f));
 		staticShader.setMat4("model", model);
@@ -1468,9 +1638,9 @@ int main()
 
 		//tienda
 
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(-1100.0f, 0.0f, 900.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-900.0f, 0.0f, 700.0f));
 		model = glm::rotate(model, glm::radians(135.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(1.0f));
+		model = glm::scale(model, glm::vec3(1.3f));
 		staticShader.setMat4("model", model);
 		tienda.Draw(staticShader);
 
@@ -1489,32 +1659,32 @@ int main()
 
 		model = glm::translate(glm::mat4(1.0f), glm::vec3(-800.0f, 0.0f, -900.0f));
 		model = glm::rotate(model, glm::radians(-45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(1.0f));
+		model = glm::scale(model, glm::vec3(1.3f));
 		staticShader.setMat4("model", model);
 		laboratorio.Draw(staticShader);
 
 
 		//invernadero
 	
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(-1000.0f, -40.0f, 0.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-1000.0f, -100.0f, 0.0f));
 		model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(1.0f));
+		model = glm::scale(model, glm::vec3(1.5f));
 		staticShader.setMat4("model", model);
 		plant1.Draw(staticShader);
 
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(-1200.0f, -40.0f, 150.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-1000.0f, -100.0f, -200.0f));
 		model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(1.0f));
+		model = glm::scale(model, glm::vec3(1.5f));
 		staticShader.setMat4("model", model);
 		plant1.Draw(staticShader);
 
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(-980.0f, -40.0f, 200.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-980.0f, -60.0f, 200.0f));
 		model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.01f));
 		staticShader.setMat4("model", model);
 		plant2.Draw(staticShader);
 
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(-860.0f, -40.0f, -200.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-860.0f, -60.0f, -200.0f));
 		model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.01f));
 		staticShader.setMat4("model", model);
@@ -1543,75 +1713,178 @@ int main()
 		staticShader.setMat4("model", model);
 		helecho.Draw(staticShader);
 
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(-1000.0f, 0.0f, 90.0f));
-		model = glm::scale(model, glm::vec3(1.0f));
-		staticShader.setMat4("model", model);
-		fPlant.Draw(staticShader);
 
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(-1000.0f, 0.0f, -200.0f));
-		model = glm::scale(model, glm::vec3(1.0f));
-		staticShader.setMat4("model", model);
-		fPlant.Draw(staticShader);
-
-		/*model = glm::translate(glm::mat4(1.0f), glm::vec3(-1200.0f, 0.0f, 0.0f));
-		model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(1.0f));
-		staticShader.setMat4("model", model);
-		plant4.Draw(staticShader);
-		*/
-
-
-
-
-
-
-
-		//Modelos B
-		model = glm::rotate(glm::mat4(1.0f), glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(movGEsfera_x, 10.0f, movGEsfera_z));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(movGEsfera_x, 12.0f, movGEsfera_z));
 		tmp = model = glm::rotate(model, glm::radians(orientaGEsfera), glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(15.0f));
+		model = glm::scale(model, glm::vec3(18.0f));
 		staticShader.setMat4("model", model);
 		GiroEsfera.Draw(staticShader);
-
 
 		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(400.0f));
 		staticShader.setMat4("model", model);
 		Cupula.Draw(staticShader);
 
+	//PTERO 1
+
 		model = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::translate(glm::mat4(1.0f), glm::vec3(movPtero1_x, 300.0f, movPtero1_z));
 		tmp = model = glm::rotate(model, glm::radians(orientaPtero1), glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(1.0f*0.05));
+		model = glm::scale(model, glm::vec3(0.1f));
 		staticShader.setMat4("model", model);
-		Dino2.Draw(staticShader);
+		Ptero.Draw(staticShader);
+
+		model = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(movPtero1_x, 300.0f, movPtero1_z));
+		tmp = model = glm::rotate(model, glm::radians(orientaPtero1), glm::vec3(0.0f, 1.0f, 0.0f));
+		tmp = model = glm::rotate(model, glm::radians(-alasPtero), glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::scale(model, glm::vec3(0.1f));
+		staticShader.setMat4("model", model);
+		AlaIzq.Draw(staticShader);
+
+		model = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(movPtero1_x, 300.0f, movPtero1_z));
+		tmp = model = glm::rotate(model, glm::radians(orientaPtero1), glm::vec3(0.0f, 1.0f, 0.0f));
+		tmp = model = glm::rotate(model, glm::radians(alasPtero), glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::scale(model, glm::vec3(0.1f));
+		staticShader.setMat4("model", model);
+		AlaDer.Draw(staticShader);
+
+	//PTERO 2
 
 		model = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::translate(glm::mat4(1.0f), glm::vec3(movPtero2_x, 300.0f, movPtero2_z));
 		tmp = model = glm::rotate(model, glm::radians(orientaPtero2), glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(1.0f * 0.05));
+		model = glm::scale(model, glm::vec3(0.1f));
 		staticShader.setMat4("model", model);
-		Dino2_2.Draw(staticShader);
+		Ptero.Draw(staticShader);
 
+		model = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(movPtero2_x, 300.0f, movPtero2_z));
+		tmp = model = glm::rotate(model, glm::radians(orientaPtero2), glm::vec3(0.0f, 1.0f, 0.0f));
+		tmp = model = glm::rotate(model, glm::radians(-alasPtero), glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::scale(model, glm::vec3(0.1f));
+		staticShader.setMat4("model", model);
+		AlaIzq.Draw(staticShader);
+
+		model = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(movPtero2_x, 300.0f, movPtero2_z));
+		tmp = model = glm::rotate(model, glm::radians(orientaPtero2), glm::vec3(0.0f, 1.0f, 0.0f));
+		tmp = model = glm::rotate(model, glm::radians(alasPtero), glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::scale(model, glm::vec3(0.1f));
+		staticShader.setMat4("model", model);
+		AlaDer.Draw(staticShader);
+
+	//PTERO 3
 
 		model = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::translate(glm::mat4(1.0f), glm::vec3(movPtero3_x, 300.0f, movPtero3_z));
 		tmp = model = glm::rotate(model, glm::radians(orientaPtero3), glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(1.0f * 0.05));
+		model = glm::scale(model, glm::vec3(0.1));
 		staticShader.setMat4("model", model);
-		Dino2_3.Draw(staticShader);
+		Ptero.Draw(staticShader);
+
+		model = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(movPtero3_x, 300.0f, movPtero3_z));
+		tmp = model = glm::rotate(model, glm::radians(orientaPtero3), glm::vec3(0.0f, 1.0f, 0.0f));
+		tmp = model = glm::rotate(model, glm::radians(-alasPtero), glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::scale(model, glm::vec3(0.1f));
+		staticShader.setMat4("model", model);
+		AlaIzq.Draw(staticShader);
+
+		model = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(movPtero3_x, 300.0f, movPtero3_z));
+		tmp = model = glm::rotate(model, glm::radians(orientaPtero3), glm::vec3(0.0f, 1.0f, 0.0f));
+		tmp = model = glm::rotate(model, glm::radians(alasPtero), glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::scale(model, glm::vec3(0.1f));
+		staticShader.setMat4("model", model);
+		AlaDer.Draw(staticShader);
+
+	//PTERO 4
 
 		model = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::translate(glm::mat4(1.0f), glm::vec3(movPtero4_x, 300.0f, movPtero4_z));
 		tmp = model = glm::rotate(model, glm::radians(orientaPtero4), glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(1.0f * 0.05));
+		model = glm::scale(model, glm::vec3(0.1));
 		staticShader.setMat4("model", model);
-		Dino2_4.Draw(staticShader);
+		Ptero.Draw(staticShader);
 
+		model = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(movPtero4_x, 300.0f, movPtero4_z));
+		tmp = model = glm::rotate(model, glm::radians(orientaPtero4), glm::vec3(0.0f, 1.0f, 0.0f));
+		tmp = model = glm::rotate(model, glm::radians(-alasPtero), glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::scale(model, glm::vec3(0.1f));
+		staticShader.setMat4("model", model);
+		AlaIzq.Draw(staticShader);
 
+		model = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(movPtero4_x, 300.0f, movPtero4_z));
+		tmp = model = glm::rotate(model, glm::radians(orientaPtero4), glm::vec3(0.0f, 1.0f, 0.0f));
+		tmp = model = glm::rotate(model, glm::radians(alasPtero), glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::scale(model, glm::vec3(0.1f));
+		staticShader.setMat4("model", model);
+		AlaDer.Draw(staticShader);
 
+		//-------------------------------------------------------------------
+ 
+		model = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-1200.0f, 2.0f, 170.0f));
+		tmp = model = glm::rotate(model, glm::radians(120.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(5.0));
+		staticShader.setMat4("model", model);
+		Dino3.Draw(staticShader);
 
+		model = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-1200.0f, 2.0f, -100.0f));
+		tmp = model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(4.0));
+		staticShader.setMat4("model", model);
+		Dino3.Draw(staticShader);
+
+		model = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-1200.0f, 2.0f, -350.0f));
+		tmp = model = glm::rotate(model, glm::radians(65.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(5.0));
+		staticShader.setMat4("model", model);
+		Dino3.Draw(staticShader);
+
+		//EdnaModa
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(movEdnaModa_X, 4.0f, movEdnaModa_Z));
+		tmp = model = glm::rotate(model, glm::radians(135.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(5.0f));
+		staticShader.setMat4("model", model);
+		EdnaCuerpo.Draw(staticShader);
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(movEdnaModa_X, 4.0f, movEdnaModa_Z));
+		tmp = model = glm::rotate(model, glm::radians(135.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(5.0f));
+		staticShader.setMat4("model", model);
+		EdnaCabeza.Draw(staticShader);
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(movEdnaModa_X, 4.0f, movEdnaModa_Z));
+		tmp = model = glm::rotate(model, glm::radians(135.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(5.0f));
+		staticShader.setMat4("model", model);
+		EdnaBrazIzq.Draw(staticShader);
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(movEdnaModa_X, 4.0f, movEdnaModa_Z));
+		tmp = model = glm::rotate(model, glm::radians(135.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(5.0f));
+		staticShader.setMat4("model", model);
+		EdnaBrazDer.Draw(staticShader);
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(movEdnaModa_X, 4.0f, movEdnaModa_Z));
+		tmp = model = glm::rotate(model, glm::radians(135.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(5.0f));
+		staticShader.setMat4("model", model);
+		EdnaPierIzq.Draw(staticShader);
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(movEdnaModa_X, 4.0f, movEdnaModa_Z));
+		tmp = model = glm::rotate(model, glm::radians(135.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(5.0f));
+		staticShader.setMat4("model", model);
+		EdnaPierDer.Draw(staticShader);
 
 		//FIN MODELOS B
 
@@ -1621,6 +1894,14 @@ int main()
 		// -------------------
 		skyboxShader.use();
 		skybox.Draw(skyboxShader, view, projection, camera);
+
+		/* AUDIO */
+
+	//	alListener3f(AL_POSITION, camera.Position.x, camera.Position.y, camera.Position.z);
+
+		// Audio Tematico
+	//	alSource3f(sources[0], AL_POSITION, camera.Position.x, camera.Position.y, camera.Position.z);
+
 
 		// Limitar el framerate a 60
 		deltaTime = SDL_GetTicks() - lastFrame; // time for full 1 loop
@@ -1639,111 +1920,79 @@ int main()
 	skybox.Terminate();
 
 	glfwTerminate();
+
+/*	alDeleteSources(2, sources);
+	alDeleteBuffers(2, buffers);
+	ALCcontext* context = alcGetCurrentContext();
+	ALCdevice* device = alcGetContextsDevice(context);
+	alcMakeContextCurrent(NULL);
+	alcDestroyContext(context);
+	alcCloseDevice(device);
+*/
+
 	return 0;
 }
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
-void my_input(GLFWwindow *window, int key, int scancode, int action, int mode)
+void my_input(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
 		camera.ProcessKeyboard(FORWARD, (float)deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		camera.ProcessKeyboard(BACKWARD, (float)deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		if (EdnaCam) {
+			movEdnaModa_Z -= 21.0f;
+		}
+	}
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+		camera.ProcessKeyboard(BACKWARD, (float)deltaTime);	
+		if (EdnaCam) {
+			movEdnaModa_Z += 21.0f;
+		}
+	}
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
 		camera.ProcessKeyboard(LEFT, (float)deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		if (EdnaCam) {
+			movEdnaModa_X -= 21.0f;
+		}
+	}
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
 		camera.ProcessKeyboard(RIGHT, (float)deltaTime);
-	//To Configure Model
+		if (EdnaCam) {
+			movEdnaModa_X += 21.0f;
+		}
+	}
 
-	if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS) //movCabeza
-		movCabeza += 2.0f;
-	if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
-		movCabeza -= 2.0f;
+	//Edna Moda
+	if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS) {
+		EdnaCam = false;
+	}
+	if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {
+		EdnaCam = true;
+	}
 
-	if (glfwGetKey(window, GLFW_KEY_9) == GLFW_PRESS) //movCabeza
-		posY += 2.0f;
-	if (glfwGetKey(window, GLFW_KEY_8) == GLFW_PRESS)
-		posY -= 2.0f;
-
-
-	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-		posmanY += 3.0;
-	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-		movBrazoDer -= 2.0f;
-	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-		movBrazoIzq += 2.0f;
-	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-		movBrazoIzq -= 2.0f;
-	if (glfwGetKey(window, GLFW_KEY_Y) == GLFW_PRESS)
-		posZ++;
-	if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS)
-		posZ--;
-	if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS)
-		posX--;
-	if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS)
-		posX++;
-	if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS)
-		rotRodIzq--;
-	if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS)
-		rotRodIzq++;
-
-	if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) //pierna derecha
-		rotRodDer--;
-	if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS)
-		rotRodDer++;
+	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+		movEdnaModa_Z -= 10.0f;
+	}
+	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+		movEdnaModa_Z += 10.0f;
+	}
+	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+		movEdnaModa_X -= 10.0f;
+	}
+	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+		movEdnaModa_X += 10.0f;
+	}
 
 
-
-	if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS)
-		giroMonito--;
-	if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
-		giroMonito++;
+	/*To Configure Model
 	if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS)
 		lightPosition.x++;
 	if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS)
 		lightPosition.x--;
-
-	//Car animation ANIMACION DE AUTOMOVIL
-	if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
-		//if (movAuto_z < 200.0f) {
-			animacion ^= true;
-		//}else
-		//movAuto_z = 0.0f; if else comntado para detenerse al llegar al valor
-
-	//To play KeyFrame animation 
-	if (key == GLFW_KEY_P && action == GLFW_PRESS)
-	{
-		if (play == false && (FrameIndex > 1))
-		{
-			std::cout << "Play animation" << std::endl;
-			resetElements();
-			//First Interpolation				
-			interpolation();
-
-			play = true;
-			playIndex = 0;
-			i_curr_steps = 0;
-		}
-		else
-		{
-			play = false;
-			std::cout << "Not enough Key Frames" << std::endl;
-		}
-	}
-
-	//To Save a KeyFrame
-	if (key == GLFW_KEY_L && action == GLFW_PRESS)
-	{
-		if (FrameIndex < MAX_FRAMES)
-		{
-			saveFrame();
-		}
-	}
+	*/
 }
-
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
 // ---------------------------------------------------------------------------------------------
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
